@@ -53,6 +53,27 @@ func CreateSubject(c *gin.Context) {
 		return
 	}
 
+	// Check if this teacher is already assigned to this class
+	var existingAssignment int64
+	if err := config.DB.Model(&models.Subject{}).Where("class_id = ? AND teacher_id = ?", input.ClassID, input.TeacherID).Count(&existingAssignment).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check teacher assignments"})
+		return
+	}
+
+	if existingAssignment == 0 {
+		// New teacher for this class, check limit
+		var uniqueTeachersCount int64
+		if err := config.DB.Model(&models.Subject{}).Where("class_id = ?", input.ClassID).Distinct("teacher_id").Count(&uniqueTeachersCount).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check unique teachers count"})
+			return
+		}
+
+		if class.MaxTeachers > 0 && uniqueTeachersCount >= int64(class.MaxTeachers) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Gagal! Kapasitas kelas sudah penuh. Maksimal hanya muat %d guru.", class.MaxTeachers)})
+			return
+		}
+	}
+
 	subject := models.Subject{
 		SubjectName: input.SubjectName,
 		ClassID:     input.ClassID,

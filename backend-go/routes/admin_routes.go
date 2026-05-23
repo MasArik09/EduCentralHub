@@ -15,5 +15,11 @@ func AdminRoutes(router *gin.Engine) {
 	{
 		adminGroup.POST("/class", controllers.CreateClass)
 		adminGroup.POST("/enroll", controllers.EnrollStudent)
+		adminGroup.GET("/students", controllers.GetStudents)
+		adminGroup.GET("/classes", controllers.GetClasses)
+		adminGroup.DELETE("/class/:id", controllers.DeleteClass)
+		adminGroup.GET("/class/:id", controllers.GetClassDetail)
+		adminGroup.POST("/class/bulk-remove", controllers.BulkRemoveClassMembers)
+		adminGroup.POST("/class/bulk-move", controllers.BulkMoveClassMembers)
 	}
 }
