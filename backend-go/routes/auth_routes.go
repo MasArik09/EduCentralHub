@@ -12,5 +12,6 @@ func SetupAuthRoutes(r *gin.Engine) {
 	{
 		authGroup.POST("/register", controllers.Register)
 		authGroup.POST("/login", controllers.Login)
+		authGroup.POST("/refresh", controllers.Refresh)
 	}
 }

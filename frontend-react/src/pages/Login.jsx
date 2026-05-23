@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -8,7 +8,63 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [backupSecondsLeft, setBackupSecondsLeft] = useState(0);
+  const [backupToken, setBackupToken] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('backupToken');
+    const timeStr = localStorage.getItem('backupTokenTime');
+    if (token && timeStr) {
+      const time = parseInt(timeStr, 10);
+      const elapsed = Math.floor((Date.now() - time) / 1000);
+      const remaining = 64 - elapsed; // 64 seconds total (1 minute grace period)
+      if (remaining > 0) {
+        setBackupToken(token);
+        setBackupSecondsLeft(remaining);
+      } else {
+        localStorage.removeItem('backupToken');
+        localStorage.removeItem('backupTokenTime');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (backupSecondsLeft <= 0) {
+      setBackupToken(null);
+      localStorage.removeItem('backupToken');
+      localStorage.removeItem('backupTokenTime');
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setBackupSecondsLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setBackupToken(null);
+          localStorage.removeItem('backupToken');
+          localStorage.removeItem('backupTokenTime');
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [backupSecondsLeft]);
+
+  const handleQuickRelogin = () => {
+    const token = localStorage.getItem('backupToken');
+    if (token) {
+      localStorage.setItem('token', token);
+      localStorage.removeItem('backupToken');
+      localStorage.removeItem('backupTokenTime');
+      setSuccess('Selamat datang kembali! Mengalihkan...');
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1200);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,10 +79,14 @@ export default function Login() {
       });
 
       // Assuming API returns token in response.data.token or response.data.data.token
-      const token = response.data?.token || response.data?.data?.token;
+      const token = response.data?.token || response.data?.data?.token || response.data?.access_token;
+      const refreshToken = response.data?.refresh_token;
 
       if (token) {
         localStorage.setItem('token', token);
+        if (refreshToken) {
+          localStorage.setItem('refreshToken', refreshToken);
+        }
         setSuccess('Login berhasil! Mengalihkan...');
         setTimeout(() => {
           navigate('/dashboard');
@@ -144,6 +204,19 @@ export default function Login() {
             )}
           </button>
         </form>
+
+        {backupToken && backupSecondsLeft > 0 && (
+          <div className="mt-6 p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-200 text-sm text-center animate-fade-in shadow-lg">
+            <p className="font-semibold text-xs mb-2 text-indigo-300">Tidak sengaja keluar?</p>
+            <button
+              type="button"
+              onClick={handleQuickRelogin}
+              className="w-full py-2.5 px-4 bg-indigo-650 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition-all duration-200 shadow-md shadow-indigo-500/20"
+            >
+              Klik di sini untuk Masuk Kembali ({backupSecondsLeft} detik)
+            </button>
+          </div>
+        )}
 
         <div className="mt-8 text-center border-t border-slate-800/60 pt-6">
           <p className="text-sm text-slate-400">
