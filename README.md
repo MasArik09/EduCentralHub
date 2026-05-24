@@ -14,19 +14,15 @@ Proyek **EduCentralHub** ini dikembangkan secara dinamis oleh **Arthur** dengan 
 
 Untuk menjalankan dan mengembangkan proyek ini, pastikan lingkungan lokal Anda memenuhi persyaratan versi minimal berikut:
 
-*   **Backend:**
-    *   **Go (Golang) v1.21+**
-    *   Framework: **Gin Gonic** (routing HTTP super cepat) & **GORM** (ORM elegan untuk integrasi database)
-*   **Frontend:**
-    *   **React.js v18+** (di-build dengan bundler secepat kilat **Vite**)
-    *   Styling: **Tailwind CSS v3+**
-*   **Database:**
-    *   **PostgreSQL v15+**
-*   **Library Tambahan (Premium Libraries):**
-    *   `react-select` (untuk *Searchable* NIS autocomplete dropdown)
-    *   `SweetAlert2` (untuk UI notifikasi & modal konfirmasi premium)
-    *   `Axios` (untuk manajemen request HTTP client-side)
-    *   `Bcrypt` & `JWT` (untuk enkripsi password & proteksi otentikasi berbasis token)
+### 🛠️ Teknologi yang Digunakan (Tech Stack)
+
+| Komponen | Teknologi | Badges |
+| :--- | :--- | :--- |
+| **Backend** | Go (Golang) v1.21+ | ![Go](https://img.shields.io/badge/Go-00ADD8?style=flat-square&logo=go&logoColor=white) ![Gin](https://img.shields.io/badge/Gin-00ADD8?style=flat-square&logo=go&logoColor=white) |
+| **Frontend** | React.js v18+ | ![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white) |
+| **Database** | PostgreSQL v15+ | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white) |
+| **Libraries** | JWT, Axios, SweetAlert2 | ![JWT](https://img.shields.io/badge/JWT-black?style=flat-square&logo=JSON-web-tokens&logoColor=white) ![SweetAlert2](https://img.shields.io/badge/SweetAlert2-purple?style=flat-square) |
+
 
 ---
 
