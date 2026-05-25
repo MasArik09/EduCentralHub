@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"log"
+	_ "time/tzdata"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -15,7 +16,7 @@ var DB *gorm.DB
 // ConnectDatabase initializes the connection to the PostgreSQL database using GORM.
 func ConnectDatabase() {
 	// Connection parameters as requested
-	host := "localhost"
+	host := "host.docker.internal"
 	user := "postgres"
 	password := "123"
 	dbname := "educentralhub"

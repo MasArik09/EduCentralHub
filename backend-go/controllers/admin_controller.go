@@ -114,6 +114,9 @@ func EnrollStudent(c *gin.Context) {
 		return
 	}
 
+	// Synchronize ClassID in users table
+	config.DB.Model(&models.User{}).Where("id = ?", input.StudentID).Update("class_id", input.ClassID)
+
 	c.JSON(http.StatusCreated, gin.H{
 		"message":    "Student enrolled successfully",
 		"enrollment": enrollment,
@@ -128,6 +131,135 @@ func GetStudents(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, users)
+}
+
+// GetAllStudents retrieves all students preloading their Class information
+func GetAllStudents(c *gin.Context) {
+	var students []models.User
+	if err := config.DB.Preload("Class").Where("role = ?", "student").Find(&students).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch students with classes"})
+		return
+	}
+	c.JSON(http.StatusOK, students)
+}
+
+// GetAvailableStudents retrieves all students that are not enrolled in the specified class ID
+func GetAvailableStudents(c *gin.Context) {
+	classID := c.Query("class_id")
+	if classID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "class_id query parameter is required"})
+		return
+	}
+
+	var students []models.User
+	err := config.DB.Where("role = ?", "student").
+		Where("id NOT IN (SELECT student_id FROM enrollments WHERE class_id = ?)", classID).
+		Find(&students).Error
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch available students"})
+		return
+	}
+
+	c.JSON(http.StatusOK, students)
+}
+
+// BulkEnrollStudentsInput defines the payload for enrolling multiple students at once
+type BulkEnrollStudentsInput struct {
+	ClassID    uint   `json:"class_id" binding:"required"`
+	StudentIDs []uint `json:"student_ids" binding:"required"`
+}
+
+// BulkEnrollStudents registers multiple students to a class by creating Enrollment records in a transaction
+func BulkEnrollStudents(c *gin.Context) {
+	var input BulkEnrollStudentsInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if len(input.StudentIDs) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "student_ids array cannot be empty"})
+		return
+	}
+
+	// Verify class exists
+	var class models.Class
+	if err := config.DB.First(&class, input.ClassID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Class not found"})
+		return
+	}
+
+	// Count existing students in the class
+	var currentStudentsCount int64
+	if err := config.DB.Model(&models.Enrollment{}).Where("class_id = ?", input.ClassID).Count(&currentStudentsCount).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check class capacity"})
+		return
+	}
+
+	// Verify maximum students limit
+	if class.MaxStudents > 0 && currentStudentsCount+int64(len(input.StudentIDs)) > int64(class.MaxStudents) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Gagal! Kapasitas kelas tidak mencukupi. Kapasitas tersisa: %d siswa.", int64(class.MaxStudents)-currentStudentsCount)})
+		return
+	}
+
+	// Start database transaction
+	tx := config.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	for _, studentID := range input.StudentIDs {
+		// Verify that the student exists and is a student
+		var student models.User
+		if err := tx.First(&student, studentID).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("Student ID %d not found", studentID)})
+			return
+		}
+		if student.Role != "student" {
+			tx.Rollback()
+			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("User ID %d is not a student", studentID)})
+			return
+		}
+
+		// Verify duplicate enrollment
+		var existingEnrollment models.Enrollment
+		err := tx.Where("student_id = ? AND class_id = ?", studentID, input.ClassID).First(&existingEnrollment).Error
+		if err == nil {
+			// Student is already enrolled in this class, skip or error
+			continue
+		}
+
+		// Create Enrollment
+		enrollment := models.Enrollment{
+			StudentID: studentID,
+			ClassID:   input.ClassID,
+		}
+		if err := tx.Create(&enrollment).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create enrollment records"})
+			return
+		}
+
+		// Sync ClassID in users table
+		if err := tx.Model(&models.User{}).Where("id = ?", studentID).Update("class_id", input.ClassID).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update student profile"})
+			return
+		}
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction commit failed"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": fmt.Sprintf("Berhasil mendaftarkan %d siswa ke dalam kelas %s", len(input.StudentIDs), class.ClassName),
+	})
 }
 
 // GetClasses retrieves all class records from the database
@@ -232,6 +364,9 @@ func BulkRemoveClassMembers(c *gin.Context) {
 		return
 	}
 
+	// Synchronize ClassID in users table (set to nil)
+	config.DB.Model(&models.User{}).Where("id IN ?", input.UserIDs).Update("class_id", nil)
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Class members removed successfully",
 	})
@@ -286,6 +421,9 @@ func BulkMoveClassMembers(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to move class members"})
 		return
 	}
+
+	// Synchronize ClassID in users table
+	config.DB.Model(&models.User{}).Where("id IN ?", input.UserIDs).Update("class_id", input.ToClassID)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Class members moved successfully",

@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
+import DataSiswa from './DataSiswa';
+import EnrollSiswa from './EnrollSiswa';
 
 // Utility function to decode JWT safely
 const decodeJWT = (token) => {
@@ -98,43 +100,50 @@ export default function Dashboard() {
     }
   }, []);
 
+  const fetchAvailableStudents = async (classId) => {
+    if (!classId) return;
+    const token = localStorage.getItem('token');
+    try {
+      const res = await axios.get(`http://localhost:8080/api/admin/available-students?class_id=${classId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setStudentsList(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch available students:', err);
+      setStudentsList([]);
+    }
+  };
+
+  const fetchEnrollData = async () => {
+    setEnrollError('');
+    setEnrollSuccess('');
+    const token = localStorage.getItem('token');
+    try {
+      const classesRes = await axios.get('http://localhost:8080/api/admin/classes', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const classes = classesRes.data || [];
+      setClassesList(classes);
+      
+      if (classes.length > 0) {
+        const initialClassId = classes[0].id.toString();
+        setClassIdInput(initialClassId);
+        fetchAvailableStudents(initialClassId);
+      } else {
+        setClassIdInput('');
+        setStudentsList([]);
+      }
+    } catch (err) {
+      console.error('Failed to fetch dropdown list data:', err);
+      setEnrollError(err.response?.data?.error || err.message || 'Gagal memuat daftar siswa atau kelas.');
+    }
+  };
+
   // Fetch student and class list data when Admin opens the Enroll page
   useEffect(() => {
     if (currentView === 'enroll-student' && role === 'admin') {
-      const fetchData = async () => {
-        setEnrollError('');
-        setEnrollSuccess('');
-        const token = localStorage.getItem('token');
-        try {
-          const [studentsRes, classesRes] = await Promise.all([
-            axios.get('http://localhost:8080/api/admin/students', {
-              headers: { Authorization: `Bearer ${token}` }
-            }),
-            axios.get('http://localhost:8080/api/admin/classes', {
-              headers: { Authorization: `Bearer ${token}` }
-            })
-          ]);
-          
-          const students = studentsRes.data || [];
-          const classes = classesRes.data || [];
-          
-          setStudentsList(students);
-          setClassesList(classes);
-
-          // Keep selected student initialized as null (no pre-selection)
-          setSelectedStudent(null);
-          
-          if (classes.length > 0) {
-            setClassIdInput(classes[0].id.toString());
-          } else {
-            setClassIdInput('');
-          }
-        } catch (err) {
-          console.error('Failed to fetch dropdown list data:', err);
-          setEnrollError(err.response?.data?.error || err.message || 'Gagal memuat daftar siswa atau kelas.');
-        }
-      };
-      fetchData();
+      setSelectedStudent(null);
+      fetchEnrollData();
     }
   }, [currentView, role]);
 
@@ -573,6 +582,8 @@ export default function Dashboard() {
       setEnrollSuccess('Siswa berhasil terdaftar di dalam kelas!');
       // Reset student selector back to null
       setSelectedStudent(null);
+      // Refresh the searchable select dropdown options list for currently selected class
+      fetchAvailableStudents(classIdInput);
       if (classesList.length > 0) {
         setClassIdInput(classesList[0].id.toString());
       }
@@ -843,6 +854,25 @@ export default function Dashboard() {
                   <span>Enroll Siswa</span>
                 </div>
                 {currentView === 'enroll-student' && (
+                  <div className="absolute right-0 top-2 bottom-2 w-1 bg-[#4318FF] rounded-l-md"></div>
+                )}
+              </button>
+
+              <button
+                onClick={() => setCurrentView('data-siswa')}
+                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all text-left relative ${
+                  currentView === 'data-siswa'
+                    ? 'text-[#4318FF] font-semibold bg-[#F4F7FE]'
+                    : 'text-[#A3AED0] hover:text-[#1B254B] hover:bg-[#F4F7FE]'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <svg className={`w-5 h-5 ${currentView === 'data-siswa' ? 'text-[#4318FF]' : 'text-[#A3AED0]'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  <span>Data Siswa</span>
+                </div>
+                {currentView === 'data-siswa' && (
                   <div className="absolute right-0 top-2 bottom-2 w-1 bg-[#4318FF] rounded-l-md"></div>
                 )}
               </button>
@@ -1384,91 +1414,12 @@ export default function Dashboard() {
 
           {/* Enroll Student View (Admin Only) */}
           {currentView === 'enroll-student' && role === 'admin' && (
-            <div className="w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-[0_4px_20px_0_rgba(112,144,176,0.08)] border border-[#E9EDF7] p-8 space-y-6">
-              <div className="flex justify-between items-center border-b border-[#E9EDF7] pb-4">
-                <h2 className="text-2xl font-extrabold text-[#1B254B]">
-                  Pendaftaran Siswa (Enroll)
-                </h2>
-                <button
-                  onClick={() => setCurrentView('dashboard')}
-                  className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-[#1B254B] border border-[#E0E5F2] hover:bg-[#F4F7FE] bg-white rounded-xl transition-all"
-                >
-                  Kembali ke Dashboard
-                </button>
-              </div>
+            <EnrollSiswa />
+          )}
 
-              {enrollError && (
-                <div className="p-4 rounded-xl bg-[#FFF5F5] border border-[#FDE8E8] text-[#E31A1A] text-sm flex items-center gap-3">
-                  <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span>{enrollError}</span>
-                </div>
-              )}
-
-              {enrollSuccess && (
-                <div className="p-4 rounded-xl bg-[#F0FDF4] border border-[#DCFCE7] text-[#15803D] text-sm flex items-center gap-3">
-                  <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span>{enrollSuccess}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleEnrollStudent} className="space-y-5">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                    Pilih Siswa (Searchable)
-                  </label>
-                  <Select
-                    options={formattedStudents}
-                    isSearchable={true}
-                    placeholder="Ketik NIS, nama, atau email siswa..."
-                    value={selectedStudent}
-                    onChange={(selectedOption) => setSelectedStudent(selectedOption)}
-                    styles={customSelectStyles}
-                    noOptionsMessage={() => "Siswa tidak ditemukan"}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                    Pilih Kelas
-                  </label>
-                  <select
-                    required
-                    className="w-full px-4 py-3 bg-[#F4F7FE] border border-[#E0E5F2] rounded-xl text-[#1B254B] focus:outline-none focus:border-[#4318FF] transition-all duration-200 cursor-pointer bg-white"
-                    value={classIdInput}
-                    onChange={(e) => setClassIdInput(e.target.value)}
-                  >
-                    <option value="" disabled>-- Pilih Kelas --</option>
-                    {classesList.map((cls) => (
-                      <option key={cls.id} value={cls.id.toString()}>
-                        {cls.class_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={enrollLoading || !selectedStudent || classesList.length === 0}
-                  className="w-full py-3 px-4 bg-[#4318FF] text-white hover:bg-[#3311CC] transition-all duration-200 rounded-xl active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 shadow-[0_4px_14px_0_rgba(67,24,255,0.3)]"
-                >
-                  {enrollLoading ? (
-                    <>
-                      <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                      </svg>
-                      <span>Mendaftarkan Siswa...</span>
-                    </>
-                  ) : (
-                    <span>Submit Enrollment</span>
-                  )}
-                </button>
-              </form>
-            </div>
+          {/* Data Siswa View (Admin Only) */}
+          {currentView === 'data-siswa' && role === 'admin' && (
+            <DataSiswa />
           )}
         </main>
       </div>

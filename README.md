@@ -1,5 +1,11 @@
 # EduCentralHub 🎓
 
+[![Status](https://img.shields.io/badge/STATUS-WORK_IN_PROGRESS-orange?style=flat-square&logo=gitbook&logoColor=white)](file:///)
+[![Developed With](https://img.shields.io/badge/DEVELOPED_WITH-ANTIGRAVITY_v2.0.1-purple?style=flat-square)](file:///)
+[![Go](https://img.shields.io/badge/BACKEND-GO_1.21-00ADD8?style=flat-square&logo=go&logoColor=white)](file:///)
+[![React](https://img.shields.io/badge/FRONTEND-REACT_18-20232A?style=flat-square&logo=react&logoColor=61DAFB)](file:///)
+[![PostgreSQL](https://img.shields.io/badge/DATABASE-POSTGRESQL-316192?style=flat-square&logo=postgresql&logoColor=white)](file:///)
+
 > [!IMPORTANT]
 > **STATUS PROYEK:** Masih dalam Tahap Pengerjaan (Work In Progress 🛠️).
 
@@ -40,12 +46,14 @@ Sistem telah dilengkapi dengan fitur-fitur berstandar industri berikut:
     *   CRUD (Create, Read, Update, Delete) kelas.
     *   Sistem pembatasan kapasitas (*quota constraint*) maksimum siswa dan pengajar secara dinamis.
 5.  **Detail Anggota Kelas:** Tampilan modal mendetail untuk melihat daftar pengajar dan siswa yang terdaftar di dalam setiap kelas secara terpisah.
-6.  **Pendaftaran Siswa Instan (Enroll Student):** Fitur pendaftaran mahasiswa ke kelas menggunakan **Searchable Select Dropdown** dengan teknologi autocomplete cerdas berdasarkan Nama, NIS, atau Email siswa ala Google Search.
+6.  **Pendaftaran Siswa Massal (Bulk Enroll Students):** Fitur pendaftaran siswa massal (*Bulk Actions Multi-Select Enrollment*) dengan tata letak dinamis dua kolom (*Dual-Panel Layout*) untuk memetakan kelas target secara sangat efisien untuk data massal.
 7.  **Aksi Massal Anggota Kelas (WhatsApp-Style Bulk Action):**
     *   *Multi-select checkbox* untuk memilih beberapa siswa sekaligus di dalam kelas.
     *   Memindahkan siswa terpilih ke kelas lain secara massal (*Bulk Move*).
     *   Mengeluarkan siswa terpilih secara massal (*Bulk Remove*).
     *   Seluruh eksekusi diamankan dengan konfirmasi SweetAlert2 bertema light mode yang modern.
+8.  **Menu Direktori & Data Siswa:** Halaman direktori data siswa terpadu bertema Light Minimalist Modern yang menampilkan informasi lengkap NIS, Nama Lengkap, Kelas (lengkap dengan badge status bimbingan kelas), Nomor WhatsApp (terhubung tautan otomatis ke WA), dan Email.
+9.  **Fitur UX Premium (Shift-Click Range Selection):** Implementasi seleksi rentang checkbox (*Shift-Click Range Selection*) bergaya Gmail/WhatsApp pada tabel pendaftaran siswa massal untuk pemblokiran data secara cepat dan instan.
 
 ---
 
