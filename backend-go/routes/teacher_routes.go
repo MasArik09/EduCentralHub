@@ -16,5 +16,15 @@ func TeacherRoutes(router *gin.Engine) {
 		teacherGroup.POST("/subject", controllers.CreateSubject)
 		teacherGroup.POST("/subject/material", controllers.UploadMaterial)
 		teacherGroup.POST("/quiz", controllers.CreateQuiz)
+
+		// New modular Teacher Actions
+		teacherGroup.GET("/classes", controllers.GetClasses)
+		teacherGroup.GET("/materials", controllers.GetTeacherMaterials)
+		teacherGroup.POST("/materials", controllers.CreateTeacherMaterial)
+		teacherGroup.DELETE("/materials/:id", controllers.DeleteTeacherMaterial)
+
+		teacherGroup.GET("/quizzes", controllers.GetTeacherQuizzes)
+		teacherGroup.POST("/quizzes", controllers.CreateTeacherQuiz)
+		teacherGroup.DELETE("/quizzes/:id", controllers.DeleteTeacherQuiz)
 	}
 }

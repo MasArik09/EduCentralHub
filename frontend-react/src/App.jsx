@@ -3,6 +3,24 @@ import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import DashboardHome from './pages/DashboardHome';
+import UploadMateri from './pages/teacher/UploadMateri';
+import BuatKuis from './pages/teacher/BuatKuis';
+
+// Admin new structured modular pages
+import KelolaUser from './pages/admin/pengguna/KelolaUser';
+import ImporMassal from './pages/admin/pengguna/ImporMassal';
+import AkunOrangTua from './pages/admin/pengguna/AkunOrangTua';
+
+import KelolaKelasRombel from './pages/admin/sekolah/KelolaKelasRombel';
+import KurikulumMapel from './pages/admin/sekolah/KurikulumMapel';
+import KalenderAkademik from './pages/admin/sekolah/KalenderAkademik';
+
+import DasborSekolah from './pages/admin/laporan/DasborSekolah';
+import LaporanAkademik from './pages/admin/laporan/LaporanAkademik';
+
+import PengaturanPlatform from './pages/admin/sistem/PengaturanPlatform';
+import LogAktivitas from './pages/admin/sistem/LogAktivitas';
 
 // A simple Route Protection component
 function ProtectedRoute({ children }) {
@@ -32,7 +50,29 @@ function App() {
               <Dashboard />
             </ProtectedRoute>
           }
-        />
+        >
+          {/* Nested Children Routes */}
+          <Route index element={<DashboardHome />} />
+          
+          {/* Teacher modular pages */}
+          <Route path="upload-materi" element={<UploadMateri />} />
+          <Route path="buat-kuis" element={<BuatKuis />} />
+
+          {/* Admin 4 Categories modular pages */}
+          <Route path="admin/kelola-user" element={<KelolaUser />} />
+          <Route path="admin/impor-massal" element={<ImporMassal />} />
+          <Route path="admin/orang-tua" element={<AkunOrangTua />} />
+          
+          <Route path="admin/kelola-kelas" element={<KelolaKelasRombel />} />
+          <Route path="admin/kurikulum" element={<KurikulumMapel />} />
+          <Route path="admin/kalender" element={<KalenderAkademik />} />
+          
+          <Route path="admin/dasbor-sekolah" element={<DasborSekolah />} />
+          <Route path="admin/laporan-akademik" element={<LaporanAkademik />} />
+          
+          <Route path="admin/pengaturan" element={<PengaturanPlatform />} />
+          <Route path="admin/log-aktivitas" element={<LogAktivitas />} />
+        </Route>
 
         {/* Fallback route - redirect back to / */}
         <Route path="*" element={<Navigate to="/" replace />} />

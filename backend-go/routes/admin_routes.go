@@ -23,5 +23,9 @@ func AdminRoutes(router *gin.Engine) {
 		adminGroup.GET("/class/:id", controllers.GetClassDetail)
 		adminGroup.POST("/class/bulk-remove", controllers.BulkRemoveClassMembers)
 		adminGroup.POST("/class/bulk-move", controllers.BulkMoveClassMembers)
+
+		// New User Management endpoints
+		adminGroup.POST("/users", controllers.CreateUser)
+		adminGroup.POST("/users/import", controllers.ImportUsersBulk)
 	}
 }

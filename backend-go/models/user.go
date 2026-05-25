@@ -13,6 +13,7 @@ type User struct {
 	Email        string    `gorm:"unique;not null" json:"email"`
 	Password     string    `gorm:"not null" json:"-"` // Omit password in JSON responses
 	Role         string    `gorm:"default:student;not null" json:"role"`
+	Status       string    `gorm:"default:aktif;not null" json:"status"` // "aktif" or "nonaktif"
 	RefreshToken string    `json:"refresh_token,omitempty"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`

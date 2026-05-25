@@ -192,7 +192,7 @@ export default function EnrollSiswa() {
   };
 
   return (
-    <div className="w-full bg-[#F8FAFC] space-y-6">
+    <div className="w-full bg-transparent space-y-6">
       {/* Title Header */}
       <div className="border-b border-slate-100 pb-5 text-left">
         <h2 className="text-2xl font-extrabold text-[#1B254B]">
