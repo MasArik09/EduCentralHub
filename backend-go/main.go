@@ -48,6 +48,9 @@ func main() {
 	}
 	log.Println("Database migration completed successfully!")
 
+	// 2.5. Populate database seeder
+	config.SeedDatabase()
+
 	// 3. Initialize Gin engine router
 	r := gin.Default()
 

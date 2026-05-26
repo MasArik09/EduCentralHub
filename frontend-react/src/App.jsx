@@ -30,7 +30,7 @@ import LogAktivitas from './pages/admin/sistem/LogAktivitas';
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('token');
   if (!token) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
   return children;
 }
@@ -39,9 +39,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Route / renders the LandingPage, /login renders the Login page */}
+        {/* Route / renders the LandingPage */}
         <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
         
         {/* Route /register renders the Register page */}
         <Route path="/register" element={<Register />} />

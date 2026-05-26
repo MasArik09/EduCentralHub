@@ -1,15 +1,60 @@
 import { useState, useEffect, useRef } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import { FiUsers, FiAward, FiLayers, FiActivity, FiShield, FiFileText, FiGrid, FiCalendar, FiArrowRight } from 'react-icons/fi';
+import axios from 'axios';
 
 export default function DashboardHome() {
   const { user, role } = useOutletContext();
   const navigate = useNavigate();
 
+  // Dashboard Realy-time Data States
+  const [stats, setStats] = useState({
+    total_students: 1248,
+    total_teachers: 84,
+    total_classes: 36,
+    attendance_today: 96.4
+  });
+  const [attendanceChartData, setAttendanceChartData] = useState([95.2, 96.8, 94.5, 97.1, 96.4, 95.8]);
+  const [activityLogs, setActivityLogs] = useState([
+    { user: 'admin@educentral.com', action: 'Mengimpor 45 siswa baru via CSV', time: '2 menit yang lalu' },
+    { user: 'guru@educentral.com', action: 'Mengunggah modul ajar aljabar', time: '15 menit yang lalu' },
+    { user: 'admin@educentral.com', action: 'Mengubah kapasitas kelas VII-A', time: '1 jam yang lalu' },
+    { user: 'siswa@educentral.com', action: 'Menyelesaikan Kuis Aljabar Dasar', time: '2 jam yang lalu' }
+  ]);
+
   // Chart States
   const chartRef = useRef(null);
   const [chartJsLoaded, setChartJsLoaded] = useState(false);
   const chartInstance = useRef(null);
+
+  // Fetch Dashboard Stats from Go Backend
+  useEffect(() => {
+    if (role !== 'admin') return;
+
+    const token = localStorage.getItem('token');
+    axios.get('http://localhost:8080/api/admin/dashboard-stats', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => {
+      if (res.data) {
+        setStats({
+          total_students: res.data.total_students,
+          total_teachers: res.data.total_teachers,
+          total_classes: res.data.total_classes,
+          attendance_today: res.data.attendance_today
+        });
+        if (res.data.attendance_chart) {
+          setAttendanceChartData(res.data.attendance_chart);
+        }
+        if (res.data.activity_logs) {
+          setActivityLogs(res.data.activity_logs);
+        }
+      }
+    })
+    .catch(err => {
+      console.error("Failed to fetch dashboard stats from backend Go:", err);
+    });
+  }, [role]);
 
   useEffect(() => {
     if (role !== 'admin') return;
@@ -47,7 +92,7 @@ export default function DashboardHome() {
         datasets: [
           {
             label: 'Persentase Presensi (%)',
-            data: [95.2, 96.8, 94.5, 97.1, 96.4, 95.8],
+            data: attendanceChartData,
             borderColor: '#1A73E8',
             backgroundColor: 'rgba(26, 115, 232, 0.04)',
             fill: true,
@@ -95,7 +140,7 @@ export default function DashboardHome() {
         chartInstance.current = null;
       }
     };
-  }, [chartJsLoaded, role]);
+  }, [chartJsLoaded, role, attendanceChartData]);
 
   const renderRoleContent = () => {
     switch (role) {
@@ -110,7 +155,7 @@ export default function DashboardHome() {
                 </div>
                 <div>
                   <span className="text-xs text-[#5F6368] block font-semibold uppercase tracking-wider">Total Siswa</span>
-                  <span className="text-xl font-bold text-[#202124]">1,248 Siswa</span>
+                  <span className="text-xl font-bold text-[#202124]">{stats.total_students.toLocaleString()} Siswa</span>
                 </div>
               </div>
 
@@ -120,7 +165,7 @@ export default function DashboardHome() {
                 </div>
                 <div>
                   <span className="text-xs text-[#5F6368] block font-semibold uppercase tracking-wider">Total Guru</span>
-                  <span className="text-xl font-bold text-[#202124]">84 Guru</span>
+                  <span className="text-xl font-bold text-[#202124]">{stats.total_teachers} Guru</span>
                 </div>
               </div>
 
@@ -130,7 +175,7 @@ export default function DashboardHome() {
                 </div>
                 <div>
                   <span className="text-xs text-[#5F6368] block font-semibold uppercase tracking-wider">Total Kelas</span>
-                  <span className="text-xl font-bold text-[#202124]">36 Rombel</span>
+                  <span className="text-xl font-bold text-[#202124]">{stats.total_classes} Rombel</span>
                 </div>
               </div>
 
@@ -140,7 +185,7 @@ export default function DashboardHome() {
                 </div>
                 <div>
                   <span className="text-xs text-[#5F6368] block font-semibold uppercase tracking-wider">Kehadiran Hari Ini</span>
-                  <span className="text-xl font-bold text-[#202124]">96.4%</span>
+                  <span className="text-xl font-bold text-[#202124]">{stats.attendance_today}%</span>
                 </div>
               </div>
             </div>
@@ -167,12 +212,7 @@ export default function DashboardHome() {
                   <FiShield className="text-emerald-600" /> Log Aktivitas Terbaru
                 </h3>
                 <div className="flex-1 space-y-3.5 overflow-y-auto max-h-64 lg:max-h-[250px] pr-1 scrollbar-thin">
-                  {[
-                    { user: 'admin@educentral.com', action: 'Mengimpor 45 siswa baru via CSV', time: '2 menit yang lalu' },
-                    { user: 'guru@educentral.com', action: 'Mengunggah modul ajar aljabar', time: '15 menit yang lalu' },
-                    { user: 'admin@educentral.com', action: 'Mengubah kapasitas kelas VII-A', time: '1 jam yang lalu' },
-                    { user: 'siswa@educentral.com', action: 'Menyelesaikan Kuis Aljabar Dasar', time: '2 jam yang lalu' }
-                  ].map((log, idx) => (
+                  {activityLogs.map((log, idx) => (
                     <div key={idx} className="text-xs border-b border-gray-100 pb-2.5 last:border-none">
                       <div className="flex justify-between items-center gap-2">
                         <span className="font-semibold text-[#202124] truncate">{log.user}</span>

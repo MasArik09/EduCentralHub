@@ -1,12 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiUsers, FiPlus, FiTrash2, FiEdit2, FiShield } from 'react-icons/fi';
+import axios from 'axios';
 
 export default function AkunOrangTua() {
-  const [parents, setParents] = useState([
-    { id: 1, name: 'Budi Santoso', email: 'budi.s@gmail.com', phone: '081234567890', student: 'Andi Santoso (NIS: 10101)' },
-    { id: 2, name: 'Siti Rahma', email: 'siti.r@yahoo.com', phone: '082345678901', student: 'Rani Rahmawati (NIS: 10102)' },
-    { id: 3, name: 'Heri Wijaya', email: 'heri.w@hotmail.com', phone: '083456789012', student: 'Gita Wijaya (NIS: 10103)' }
-  ]);
+  const [parents, setParents] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    axios.get('http://localhost:8080/api/admin/parents', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => {
+      if (res.data) {
+        setParents(res.data);
+      }
+    })
+    .catch(err => {
+      console.error("Failed to fetch parents from backend Go:", err);
+    });
+  }, []);
 
   return (
     <div className="w-full bg-transparent space-y-6 text-left">
@@ -63,11 +75,11 @@ export default function AkunOrangTua() {
                   <td className="px-6 py-4 font-semibold text-[#1B254B]">{parent.name}</td>
                   <td className="px-6 py-4 text-xs font-medium text-slate-500 space-y-1">
                     <div>📧 {parent.email}</div>
-                    <div>📞 {parent.phone}</div>
+                    <div>📞 {parent.whatsapp || parent.phone || '-'}</div>
                   </td>
                   <td className="px-6 py-4">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold text-emerald-600 bg-emerald-50 rounded-full border border-emerald-200/50">
-                      {parent.student}
+                      {parent.student ? `${parent.student.name} (NIS: ${parent.student.nis})` : 'Belum Dihubungkan'}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right flex justify-end gap-2">

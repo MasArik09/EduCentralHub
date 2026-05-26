@@ -28,44 +28,30 @@ const decodeJWT = (token) => {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [role, setRole] = useState('student'); // Default role fallback
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  // Read and decode token on mount
-  useEffect(() => {
+  const [role, setRole] = useState(() => {
     const token = localStorage.getItem('token');
-    if (!token) {
-      setUser({ name: 'Demo User', email: 'demo@educentral.hub' });
-      return;
+    if (!token) return 'student';
+    const decoded = decodeJWT(token);
+    if (decoded && decoded.role) {
+      return decoded.role.toLowerCase();
     }
+    return 'student';
+  });
 
-    // Try parsing JWT first
+  const [user, setUser] = useState(() => {
+    const token = localStorage.getItem('token');
+    if (!token) return { name: 'Demo User', email: 'demo@educentral.hub' };
     const decoded = decodeJWT(token);
     if (decoded) {
-      setUser({
+      return {
         name: decoded.name || decoded.username || 'User',
         email: decoded.email || 'user@educentral.hub',
-      });
-      if (decoded.role) {
-        setRole(decoded.role.toLowerCase());
-      }
-    } else {
-      // Fallback: If not JWT, check if it's stored as direct JSON object
-      try {
-        const parsed = JSON.parse(token);
-        setUser({
-          name: parsed.name || parsed.username || 'User',
-          email: parsed.email || 'user@educentral.hub',
-        });
-        if (parsed.role) {
-          setRole(parsed.role.toLowerCase());
-        }
-      } catch (e) {
-        setUser({ name: 'Authenticated User', email: 'user@educentral.hub' });
-      }
+      };
     }
-  }, []);
+    return { name: 'Authenticated User', email: 'user@educentral.hub' };
+  });
+
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Logika Inactivity Timeout (20 Menit)
   useEffect(() => {

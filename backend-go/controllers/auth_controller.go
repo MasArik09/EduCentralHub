@@ -99,6 +99,7 @@ func Login(c *gin.Context) {
 	accessExpirationTime := time.Now().Add(1 * time.Hour)
 	accessClaims := &jwt.MapClaims{
 		"user_id": user.ID,
+		"name":    user.Name,
 		"email":   user.Email,
 		"role":    user.Role,
 		"type":    "access",
@@ -115,6 +116,7 @@ func Login(c *gin.Context) {
 	refreshExpirationTime := time.Now().Add(7 * 24 * time.Hour)
 	refreshClaims := &jwt.MapClaims{
 		"user_id": user.ID,
+		"name":    user.Name,
 		"email":   user.Email,
 		"role":    user.Role,
 		"type":    "refresh",
@@ -211,6 +213,7 @@ func Refresh(c *gin.Context) {
 	accessExpirationTime := time.Now().Add(1 * time.Hour)
 	accessClaims := &jwt.MapClaims{
 		"user_id": user.ID,
+		"name":    user.Name,
 		"email":   user.Email,
 		"role":    user.Role,
 		"type":    "access",

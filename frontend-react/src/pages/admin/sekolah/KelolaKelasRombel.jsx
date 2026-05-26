@@ -3,6 +3,19 @@ import { useOutletContext, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
+const DUMMY_TEACHERS = [
+  { id: 1, name: 'Budi Santoso, S.Pd.' },
+  { id: 2, name: 'Siti Rahma, M.Pd.' },
+  { id: 3, name: 'Ahmad Fauzi, S.Si.' },
+  { id: 4, name: 'Dewi Lestari, M.Si.' },
+  { id: 5, name: 'Rian Hidayat, S.Kom.' }
+];
+
+const getWaliKelas = (teacherId) => {
+  const teacher = DUMMY_TEACHERS.find((t) => t.id === teacherId);
+  return teacher ? teacher.name : 'Belum Ditentukan';
+};
+
 export default function KelolaKelasRombel() {
   const { role } = useOutletContext();
   const navigate = useNavigate();
@@ -17,7 +30,7 @@ export default function KelolaKelasRombel() {
   // Form states for Manage Class
   const [classNameInput, setClassNameInput] = useState('');
   const [maxStudentsInput, setMaxStudentsInput] = useState(36);
-  const [maxTeachersInput, setMaxTeachersInput] = useState(2);
+  const [homeroomTeacherId, setHomeroomTeacherId] = useState('');
   const [classLoading, setClassLoading] = useState(false);
   const [classSuccess, setClassSuccess] = useState('');
   const [classError, setClassError] = useState('');
@@ -42,8 +55,28 @@ export default function KelolaKelasRombel() {
         headers: { Authorization: `Bearer ${token}` }
       });
       const classes = classesRes.data || [];
-      setClassesList(classes);
-      return classes;
+
+      // Fetch details in parallel to get student occupancy dynamically
+      const enrichedClasses = await Promise.all(
+        classes.map(async (cls) => {
+          try {
+            const detailRes = await axios.get(`http://localhost:8080/api/admin/class/${cls.id}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            return {
+              ...cls,
+              studentCount: detailRes.data?.students ? detailRes.data.students.length : 0,
+              students: detailRes.data?.students || []
+            };
+          } catch (e) {
+            console.error(`Failed to fetch detail for class ${cls.id}:`, e);
+            return { ...cls, studentCount: 0, students: [] };
+          }
+        })
+      );
+
+      setClassesList(enrichedClasses);
+      return enrichedClasses;
     } catch (err) {
       console.error('Failed to fetch classes:', err);
       return [];
@@ -64,12 +97,18 @@ export default function KelolaKelasRombel() {
     setClassSuccess('');
     setClassLoading(true);
 
+    if (!homeroomTeacherId) {
+      setClassError('Silakan pilih Wali Kelas terlebih dahulu.');
+      setClassLoading(false);
+      return;
+    }
+
     const token = localStorage.getItem('token');
     try {
       await axios.post('http://localhost:8080/api/admin/class', {
         class_name: classNameInput,
         max_students: parseInt(maxStudentsInput, 10),
-        max_teachers: parseInt(maxTeachersInput, 10),
+        max_teachers: parseInt(homeroomTeacherId, 10),
       }, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -79,7 +118,7 @@ export default function KelolaKelasRombel() {
       setClassSuccess(`Kelas "${classNameInput}" berhasil disimpan!`);
       setClassNameInput('');
       setMaxStudentsInput(36);
-      setMaxTeachersInput(2);
+      setHomeroomTeacherId('');
       fetchClasses();
     } catch (err) {
       console.error(err);
@@ -279,12 +318,6 @@ export default function KelolaKelasRombel() {
           </h2>
           <p className="text-slate-500 text-xs mt-1">Buat, tinjau, dan hapus kelas yang terdaftar dalam sistem EduCentralHub.</p>
         </div>
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-[#1B254B] border border-[#E0E5F2] hover:bg-[#F4F7FE] bg-white rounded-xl transition-all cursor-pointer"
-        >
-          Kembali
-        </button>
       </div>
 
       {classError && (
@@ -327,15 +360,20 @@ export default function KelolaKelasRombel() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Kapasitas Guru</label>
-                  <input
-                    type="number"
-                    min="1"
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Pilih Wali Kelas</label>
+                  <select
                     required
                     className="w-full px-4 py-3 bg-[#F4F7FE] border border-[#E0E5F2] rounded-xl text-[#1B254B]"
-                    value={maxTeachersInput}
-                    onChange={(e) => setMaxTeachersInput(e.target.value)}
-                  />
+                    value={homeroomTeacherId}
+                    onChange={(e) => setHomeroomTeacherId(e.target.value)}
+                  >
+                    <option value="">Pilih Wali Kelas</option>
+                    {DUMMY_TEACHERS.map((teacher) => (
+                      <option key={teacher.id} value={teacher.id}>
+                        {teacher.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <button
@@ -360,6 +398,8 @@ export default function KelolaKelasRombel() {
                   <tr className="bg-[#F4F7FE] text-[#1B254B] font-semibold border-b border-[#E9EDF7]">
                     <th className="px-4 py-3">ID</th>
                     <th className="px-4 py-3">Nama Kelas</th>
+                    <th className="px-4 py-3">Wali Kelas</th>
+                    <th className="px-4 py-3">Okupansi Siswa</th>
                     <th className="px-4 py-3 text-right">Aksi</th>
                   </tr>
                 </thead>
@@ -368,6 +408,10 @@ export default function KelolaKelasRombel() {
                     <tr key={cls.id} className="hover:bg-[#F4F7FE]/50 transition-all">
                       <td className="px-4 py-3 text-[#A3AED0] font-mono">{cls.id}</td>
                       <td className="px-4 py-3 text-[#1B254B] font-medium">{cls.class_name}</td>
+                      <td className="px-4 py-3 text-slate-600 font-medium">{getWaliKelas(cls.max_teachers)}</td>
+                      <td className="px-4 py-3 text-slate-500 font-medium">
+                        <span className="font-semibold text-[#1B254B]">{cls.studentCount || 0}</span> / {cls.max_students} Siswa
+                      </td>
                       <td className="px-4 py-3 text-right flex justify-end gap-2">
                         <button
                           onClick={() => handleViewDetail(cls.id)}
@@ -392,11 +436,21 @@ export default function KelolaKelasRombel() {
       </div>
 
       {showDetailModal && selectedClassDetail && (
-        <div className="fixed inset-0 bg-[#1B254B]/50 backdrop-blur-md flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-[#E9EDF7] w-full max-w-3xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-6 border-b border-[#E9EDF7] flex justify-between items-center bg-[#F8FAFC]">
+        <div className="fixed inset-0 bg-black/10 backdrop-blur-[3px] flex items-center justify-center z-50 p-4 animate-fade-in">
+          {/* Outer click-to-close overlay */}
+          <div 
+            onClick={() => {
+              setShowDetailModal(false);
+              setSelectedClassDetail(null);
+              setSelectedUserIds([]);
+            }}
+            className="absolute inset-0 cursor-pointer"
+          ></div>
+
+          <div className="bg-white/80 backdrop-blur-xl border border-white/40 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] relative z-10 text-left">
+            <div className="p-6 border-b border-white/20 flex justify-between items-center bg-white/30">
               <div className="text-left">
-                <span className="text-[10px] font-bold text-[#4318FF] uppercase tracking-widest">Detail Kelas</span>
+                <span className="text-[10px] font-bold text-[#4318FF] uppercase tracking-widest">Detail Roster Rombel</span>
                 <h3 className="text-2xl font-extrabold text-[#1B254B] mt-1">{selectedClassDetail.class.class_name}</h3>
               </div>
               <button
@@ -405,32 +459,38 @@ export default function KelolaKelasRombel() {
                   setSelectedClassDetail(null);
                   setSelectedUserIds([]);
                 }}
-                className="p-2 text-slate-500 hover:text-[#1B254B] bg-[#F4F7FE] rounded-xl transition-all cursor-pointer border-none"
+                className="p-2 text-slate-500 hover:text-[#1B254B] bg-slate-100/50 hover:bg-slate-200/80 rounded-xl transition-all cursor-pointer border-none"
               >
                 Tutup
               </button>
             </div>
             <div className="p-6 space-y-6 overflow-y-auto flex-1 text-left">
               <div className="space-y-4">
-                <h4 className="text-sm font-bold text-[#1B254B] uppercase tracking-wider">Siswa Terdaftar ({selectedClassDetail.students ? selectedClassDetail.students.length : 0})</h4>
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-bold text-[#1B254B] uppercase tracking-wider">Siswa Terdaftar ({selectedClassDetail.students ? selectedClassDetail.students.length : 0})</h4>
+                  <span className="text-xs font-semibold text-slate-500">
+                    Wali Kelas: <span className="text-[#4318FF] font-bold">{getWaliKelas(selectedClassDetail.class.max_teachers)}</span>
+                  </span>
+                </div>
+
                 {selectedUserIds.length > 0 && (
-                  <div className="p-4 bg-[#F4F7FE] border border-[#E0E5F2] rounded-xl flex items-center justify-between gap-4">
+                  <div className="p-4 bg-white/50 backdrop-blur-sm border border-white/30 rounded-xl flex items-center justify-between gap-4 shadow-sm">
                     <span className="text-xs font-bold text-[#4318FF]">{selectedUserIds.length} Siswa Terpilih</span>
                     <button
                       onClick={() => handleBulkRemove(selectedClassDetail.class.id)}
                       className="px-3 py-1.5 text-xs font-bold bg-[#FFF5F5] text-[#E31A1A] hover:bg-[#FEDDCB] rounded-lg transition-all cursor-pointer border-none"
                     >
-                      Keluarkan
+                      Keluarkan Dari Kelas
                     </button>
                   </div>
                 )}
                 {!selectedClassDetail.students || selectedClassDetail.students.length === 0 ? (
-                  <div className="p-4 bg-[#F8FAFC] rounded-xl text-slate-500 text-sm italic">Belum ada siswa.</div>
+                  <div className="p-4 bg-white/30 rounded-xl text-slate-500 text-sm italic border border-white/20 text-center">Belum ada siswa yang terdaftar dalam rombel ini.</div>
                 ) : (
-                  <div className="overflow-x-auto rounded-xl border border-[#E9EDF7]">
+                  <div className="overflow-x-auto rounded-xl border border-white/20">
                     <table className="w-full text-left border-collapse text-sm">
                       <thead>
-                        <tr className="bg-[#F4F7FE] font-semibold border-b border-[#E9EDF7]">
+                        <tr className="bg-white/40 font-semibold border-b border-white/20 text-[#1B254B]">
                           <th className="px-4 py-2 w-10">
                             <input
                               type="checkbox"
@@ -439,13 +499,14 @@ export default function KelolaKelasRombel() {
                               className="cursor-pointer"
                             />
                           </th>
+                          <th className="px-4 py-2 w-12 text-center">No.</th>
                           <th className="px-4 py-2">NIS</th>
-                          <th className="px-4 py-2">Nama</th>
+                          <th className="px-4 py-2">Nama Lengkap</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-[#E9EDF7]">
-                        {selectedClassDetail.students.map((student) => (
-                          <tr key={student.id}>
+                      <tbody className="divide-y divide-white/10">
+                        {selectedClassDetail.students.map((student, idx) => (
+                          <tr key={student.id} className="hover:bg-white/40 transition-colors">
                             <td className="px-4 py-2.5">
                               <input
                                 type="checkbox"
@@ -454,6 +515,7 @@ export default function KelolaKelasRombel() {
                                 className="cursor-pointer"
                               />
                             </td>
+                            <td className="px-4 py-2.5 text-center text-slate-500 font-mono text-xs">{idx + 1}</td>
                             <td className="px-4 py-2.5 text-slate-500 font-mono text-xs">{student.nis || '-'}</td>
                             <td className="px-4 py-2.5 text-[#1B254B] font-medium">{student.name}</td>
                           </tr>

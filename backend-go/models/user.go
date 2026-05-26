@@ -10,6 +10,8 @@ type User struct {
 	ClassID      *uint     `json:"class_id"`
 	Class        *Class    `gorm:"foreignKey:ClassID" json:"class"`
 	WhatsApp     *string   `json:"whatsapp"`
+	StudentID    *uint     `json:"student_id"`
+	Student      *User     `gorm:"foreignKey:StudentID" json:"student"`
 	Email        string    `gorm:"unique;not null" json:"email"`
 	Password     string    `gorm:"not null" json:"-"` // Omit password in JSON responses
 	Role         string    `gorm:"default:student;not null" json:"role"`

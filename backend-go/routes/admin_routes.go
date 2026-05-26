@@ -31,6 +31,12 @@ func AdminRoutes(router *gin.Engine) {
 		// Calendar Academic endpoints
 		adminGroup.GET("/calendar-events", controllers.GetAllCalendarEvents)
 		adminGroup.POST("/calendar-events", controllers.CreateCalendarEvent)
-		adminGroup.POST("/calendar-events/sync", controllers.SyncNationalHolidays)
+		adminGroup.POST("/calendar-events/sync", middleware.AuthMiddleware("admin"), controllers.SyncNationalHolidays)
+
+		// Dashboard Stats, Parents, Subjects, Laporan Academic endpoints
+		adminGroup.GET("/dashboard-stats", controllers.GetDashboardStats)
+		adminGroup.GET("/parents", controllers.GetParents)
+		adminGroup.GET("/subjects", controllers.GetSubjects)
+		adminGroup.GET("/academic-reports", controllers.GetAcademicReports)
 	}
 }

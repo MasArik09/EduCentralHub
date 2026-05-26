@@ -1,12 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiBookOpen, FiPlus, FiTrash2, FiEdit2, FiTag } from 'react-icons/fi';
+import axios from 'axios';
 
 export default function KurikulumMapel() {
-  const [subjects, setSubjects] = useState([
-    { id: 1, name: 'Matematika Wajib', code: 'MTK-10', curriculum: 'Kurikulum Merdeka', hours: '4 JP / Minggu' },
-    { id: 2, name: 'Fisika Peminatan', code: 'FIS-11', curriculum: 'Kurikulum Merdeka', hours: '3 JP / Minggu' },
-    { id: 3, name: 'Bahasa Inggris', code: 'ING-10', curriculum: 'Kurikulum Merdeka', hours: '2 JP / Minggu' }
-  ]);
+  const [subjects, setSubjects] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    axios.get('http://localhost:8080/api/admin/subjects', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => {
+      if (res.data) {
+        setSubjects(res.data);
+      }
+    })
+    .catch(err => {
+      console.error("Failed to fetch subjects from backend Go:", err);
+    });
+  }, []);
 
   return (
     <div className="w-full bg-transparent space-y-6 text-left">
@@ -48,16 +60,16 @@ export default function KurikulumMapel() {
               {subjects.map((subject, index) => (
                 <tr key={subject.id} className="hover:bg-[#F4F7FE]/40 transition-colors">
                   <td className="px-6 py-4 text-center text-gray-400 font-medium">{index + 1}</td>
-                  <td className="px-6 py-4 font-mono font-bold text-xs text-slate-500">{subject.code}</td>
-                  <td className="px-6 py-4 font-semibold text-[#1B254B]">{subject.name}</td>
+                  <td className="px-6 py-4 font-mono font-bold text-xs text-slate-500">{subject.subject_code || '-'}</td>
+                  <td className="px-6 py-4 font-semibold text-[#1B254B]">{subject.subject_name}</td>
                   <td className="px-6 py-4">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold text-emerald-600 bg-emerald-50 rounded-full border border-emerald-200/50">
-                      {subject.curriculum}
+                      {subject.curriculum || 'Kurikulum Merdeka'}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-xs font-bold text-slate-500 flex items-center gap-1.5 pt-5">
                     <FiTag className="text-[#4318FF]" />
-                    {subject.hours}
+                    {subject.hours || '3 JP / Minggu'}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
