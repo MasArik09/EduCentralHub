@@ -64,6 +64,13 @@ Sistem telah dilengkapi dengan fitur-fitur berstandar industri berikut:
     *   **MANAJEMEN SEKOLAH:** Kelola Kelas & Rombel, Kurikulum & Mapel, Kalender Akademik.
     *   **LAPORAN & ANALITIK:** Dasbor Sekolah, Laporan Akademik.
     *   **KONFIGURASI SISTEM:** Pengaturan Platform, Log Aktivitas.
+11. **Kalender Akademik Split-View Premium & Dropdown Selector:**
+    *   Implementasi Dropdown Selector Interaktif untuk Bulan & Tahun secara real-time pada header kalender.
+    *   Penyempurnaan Kosmetik UI: Transformasi list agenda menjadi desain kotak tegas (sharpened corners) berstandar korporat.
+12. **Sinkronisasi Full-Stack & Arsitektur Backend (Go):**
+    *   Sinkronisasi Full-Stack: Integrasi endpoint API `GET /api/admin/calendar-events` menggunakan query GORM cerdas dengan ekstraksi tanggal PostgreSQL (EXTRACT MONTH/YEAR) untuk menyaring data berdasarkan filter frontend.
+    *   Penyelarasan endpoint data siswa dengan dukungan preloading objek kelas dan pengurutan (sorting) data yang stabil (`name ASC`).
+    *   Implementasi Fitur UX Premium **Session Grace Period Re-Login (1 Menit)** dengan pemulihan sesi instan dan notifikasi SweetAlert2 toast di sudut kanan bawah.
 
 ---
 

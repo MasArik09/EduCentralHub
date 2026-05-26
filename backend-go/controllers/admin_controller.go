@@ -136,7 +136,7 @@ func GetStudents(c *gin.Context) {
 // GetAllStudents retrieves all students preloading their Class information
 func GetAllStudents(c *gin.Context) {
 	var students []models.User
-	if err := config.DB.Preload("Class").Where("role = ?", "student").Find(&students).Error; err != nil {
+	if err := config.DB.Preload("Class").Where("role = ?", "student").Order("name ASC").Find(&students).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch students with classes"})
 		return
 	}

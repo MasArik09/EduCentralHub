@@ -1,6 +1,6 @@
 export default function Navbar({ role, setRole, sidebarOpen, setSidebarOpen }) {
   return (
-    <header className="h-20 bg-white border-b border-[#E9EDF7] px-6 flex justify-between items-center shrink-0 z-20 sticky top-0">
+    <header className="h-20 bg-[#F4F7FE] px-6 flex justify-between items-center shrink-0 z-30 sticky top-0">
       <div className="flex items-center gap-4">
         <button 
           className="md:hidden text-slate-500 hover:text-[#1B254B] cursor-pointer" 

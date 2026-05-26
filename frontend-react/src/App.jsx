@@ -4,8 +4,12 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import DashboardHome from './pages/DashboardHome';
-import UploadMateri from './pages/teacher/UploadMateri';
-import BuatKuis from './pages/teacher/BuatKuis';
+
+// Teacher modular pages
+import ClassManagement from './pages/teacher/ClassManagement/ClassManagement';
+import ContentMateri from './pages/teacher/Content/ContentMateri';
+import Assessment from './pages/teacher/Assessment/Assessment';
+import Communication from './pages/teacher/Communication/Communication';
 
 // Admin new structured modular pages
 import KelolaUser from './pages/admin/pengguna/KelolaUser';
@@ -55,8 +59,12 @@ function App() {
           <Route index element={<DashboardHome />} />
           
           {/* Teacher modular pages */}
-          <Route path="upload-materi" element={<UploadMateri />} />
-          <Route path="buat-kuis" element={<BuatKuis />} />
+          <Route path="upload-materi" element={<ContentMateri />} />
+          <Route path="buat-kuis" element={<ContentMateri />} />
+          <Route path="teacher/class-management" element={<ClassManagement />} />
+          <Route path="teacher/content" element={<ContentMateri />} />
+          <Route path="teacher/assessment" element={<Assessment />} />
+          <Route path="teacher/communication" element={<Communication />} />
 
           {/* Admin 4 Categories modular pages */}
           <Route path="admin/kelola-user" element={<KelolaUser />} />

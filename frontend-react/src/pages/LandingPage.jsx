@@ -1,6 +1,56 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export default function LandingPage() {
+  const navigate = useNavigate();
+
+  const handleMasukPlatform = () => {
+    const graceSessionStr = localStorage.getItem('grace_session');
+    if (graceSessionStr) {
+      try {
+        const graceSession = JSON.parse(graceSessionStr);
+        const timePassed = (Date.now() - graceSession.logoutAt) / 1000;
+        
+        if (timePassed < 60) {
+          // Restore token and session state
+          localStorage.setItem('token', graceSession.token);
+          if (graceSession.refreshToken) {
+            localStorage.setItem('refreshToken', graceSession.refreshToken);
+          }
+          localStorage.removeItem('grace_session');
+
+          Swal.fire({
+            title: 'Sesi Dipulihkan!',
+            text: `Selamat datang kembali! Sesi Anda berhasil dipulihkan secara instan.`,
+            icon: 'success',
+            toast: true,
+            position: 'bottom-end',
+            showConfirmButton: false,
+            timer: 3000,
+            background: '#FFFFFF',
+            color: '#1B254B',
+            customClass: {
+              popup: 'rounded-3xl shadow-lg border border-slate-100'
+            }
+          });
+
+          // Navigate to dashboard
+          navigate('/dashboard');
+          return;
+        } else {
+          // Over 1 minute, clear all session data permanently
+          localStorage.removeItem('grace_session');
+          localStorage.removeItem('token');
+          localStorage.removeItem('refreshToken');
+        }
+      } catch (err) {
+        console.error('Failed to parse grace session:', err);
+        localStorage.removeItem('grace_session');
+      }
+    }
+    navigate('/login');
+  };
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#1B254B] font-sans overflow-x-hidden">
       {/* Premium Top Navbar */}
@@ -14,12 +64,12 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-6">
-            <Link
-              to="/login"
-              className="bg-[#4318FF] hover:bg-[#3010C8] text-white rounded-xl px-6 py-2.5 font-semibold text-sm shadow-lg shadow-[#4318FF]/20 hover:shadow-[#4318FF]/30 active:scale-[0.98] transition-all duration-200"
+            <button
+              onClick={handleMasukPlatform}
+              className="bg-[#4318FF] hover:bg-[#3010C8] text-white rounded-xl px-6 py-2.5 font-semibold text-sm shadow-lg shadow-[#4318FF]/20 hover:shadow-[#4318FF]/30 active:scale-[0.98] transition-all duration-200 cursor-pointer border-none"
             >
               Masuk Platform
-            </Link>
+            </button>
           </div>
         </div>
       </nav>
@@ -48,12 +98,12 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/login"
-              className="w-full sm:w-auto bg-[#4318FF] hover:bg-[#3010C8] text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-[#4318FF]/20 hover:shadow-[#4318FF]/35 transition-all duration-200 active:scale-[0.98]"
+            <button
+              onClick={handleMasukPlatform}
+              className="w-full sm:w-auto bg-[#4318FF] hover:bg-[#3010C8] text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-[#4318FF]/20 hover:shadow-[#4318FF]/35 transition-all duration-200 active:scale-[0.98] cursor-pointer border-none text-center"
             >
               Mulai Eksplorasi
-            </Link>
+            </button>
             <a
               href="#fitur"
               className="w-full sm:w-auto bg-white hover:bg-slate-50 text-slate-700 font-bold px-8 py-4 rounded-2xl shadow-sm border border-slate-200/80 transition-all duration-200 active:scale-[0.98] text-center"

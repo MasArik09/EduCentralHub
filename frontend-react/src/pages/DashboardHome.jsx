@@ -1,43 +1,216 @@
+import { useState, useEffect, useRef } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
+import { FiUsers, FiAward, FiLayers, FiActivity, FiShield, FiFileText, FiGrid, FiCalendar, FiArrowRight } from 'react-icons/fi';
 
 export default function DashboardHome() {
   const { user, role } = useOutletContext();
   const navigate = useNavigate();
 
+  // Chart States
+  const chartRef = useRef(null);
+  const [chartJsLoaded, setChartJsLoaded] = useState(false);
+  const chartInstance = useRef(null);
+
+  useEffect(() => {
+    if (role !== 'admin') return;
+
+    // Load Chart.js CDN dynamically to be robust under React 19
+    if (window.Chart) {
+      setChartJsLoaded(true);
+    } else {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+      script.async = true;
+      script.onload = () => setChartJsLoaded(true);
+      document.body.appendChild(script);
+
+      return () => {
+        if (document.body.contains(script)) {
+          document.body.removeChild(script);
+        }
+      };
+    }
+  }, [role]);
+
+  useEffect(() => {
+    if (role !== 'admin' || !chartJsLoaded || !window.Chart || !chartRef.current) return;
+
+    if (chartInstance.current) {
+      chartInstance.current.destroy();
+    }
+
+    const ctx = chartRef.current.getContext('2d');
+    chartInstance.current = new window.Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
+        datasets: [
+          {
+            label: 'Persentase Presensi (%)',
+            data: [95.2, 96.8, 94.5, 97.1, 96.4, 95.8],
+            borderColor: '#4318FF',
+            backgroundColor: 'rgba(67, 24, 255, 0.04)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 3,
+            pointBackgroundColor: '#4318FF',
+            pointBorderColor: '#FFFFFF',
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            padding: 12,
+            backgroundColor: '#1B254B',
+            titleFont: { size: 11, weight: 'bold' },
+            bodyFont: { size: 11 },
+            cornerRadius: 12,
+          }
+        },
+        scales: {
+          y: {
+            min: 85,
+            max: 100,
+            grid: { color: '#F4F7FE' },
+            ticks: { color: '#A3AED0', font: { weight: 'bold', size: 10 } }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { color: '#A3AED0', font: { weight: 'bold', size: 10 } }
+          }
+        }
+      }
+    });
+
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+        chartInstance.current = null;
+      }
+    };
+  }, [chartJsLoaded, role]);
+
   const renderRoleContent = () => {
     switch (role) {
       case 'admin':
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-6 bg-white border border-[#E9EDF7] rounded-2xl shadow-[0_4px_20px_0_rgba(112,144,176,0.08)] hover:border-[#4318FF]/30 transition-all duration-300">
-              <div className="w-12 h-12 rounded-xl bg-[#F4F7FE] text-[#4318FF] flex items-center justify-center mb-4">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
+          <div className="space-y-6 text-left">
+            {/* 1. TOP STATS CARDS GRID (4 Kolom) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="bg-white p-5 border border-[#E9EDF7] rounded-3xl shadow-sm flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#4318FF] flex items-center justify-center text-xl font-bold shrink-0">
+                  <FiUsers />
+                </div>
+                <div>
+                  <span className="text-xs text-slate-400 block font-semibold uppercase tracking-wider">Total Siswa</span>
+                  <span className="text-xl font-black text-[#1B254B]">1,248 Siswa</span>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-[#1B254B] mb-2">Kelola Kelas</h3>
-              <p className="text-slate-500 text-sm mb-4">Buat kelas baru, tetapkan pengajar, atur kurikulum pembelajaran, dan kelola jadwal kelas harian.</p>
-              <button 
-                onClick={() => navigate('/dashboard/kelola-kelas')}
-                className="px-4 py-2 bg-[#4318FF] hover:bg-[#3311CC] text-white rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer"
-              >
-                Mulai Mengelola
-              </button>
+
+              <div className="bg-white p-5 border border-[#E9EDF7] rounded-3xl shadow-sm flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold shrink-0">
+                  <FiAward />
+                </div>
+                <div>
+                  <span className="text-xs text-slate-400 block font-semibold uppercase tracking-wider">Total Guru</span>
+                  <span className="text-xl font-black text-[#1B254B]">84 Guru</span>
+                </div>
+              </div>
+
+              <div className="bg-white p-5 border border-[#E9EDF7] rounded-3xl shadow-sm flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl font-bold shrink-0">
+                  <FiLayers />
+                </div>
+                <div>
+                  <span className="text-xs text-slate-400 block font-semibold uppercase tracking-wider">Total Kelas</span>
+                  <span className="text-xl font-black text-[#1B254B]">36 Rombel</span>
+                </div>
+              </div>
+
+              <div className="bg-white p-5 border border-[#E9EDF7] rounded-3xl shadow-sm flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl font-bold shrink-0">
+                  <FiActivity />
+                </div>
+                <div>
+                  <span className="text-xs text-slate-400 block font-semibold uppercase tracking-wider">Kehadiran Hari Ini</span>
+                  <span className="text-xl font-black text-[#1B254B]">96.4%</span>
+                </div>
+              </div>
             </div>
-            <div className="p-6 bg-white border border-[#E9EDF7] rounded-2xl shadow-[0_4px_20px_0_rgba(112,144,176,0.08)] hover:border-[#4318FF]/30 transition-all duration-300">
-              <div className="w-12 h-12 rounded-xl bg-[#F3E8FF] text-[#6B21A8] flex items-center justify-center mb-4">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                </svg>
+
+            {/* 2. DUAL-COLUMN GRAPH & LOGS */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* Left Column (2/3 width): Kehadiran Chart */}
+              <div className="bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm lg:col-span-8 space-y-4">
+                <h3 className="text-sm font-extrabold text-[#1B254B] flex items-center gap-1.5">
+                  <FiActivity className="text-[#4318FF]" /> Tren Kehadiran & Partisipasi Belajar (Minggu Ini)
+                </h3>
+                <div className="h-64 relative flex items-center justify-center bg-[#F8FAFC] border border-[#E9EDF7] rounded-2xl p-4">
+                  {!chartJsLoaded ? (
+                    <span className="text-xs text-slate-400">Memuat Chart Engine...</span>
+                  ) : (
+                    <canvas ref={chartRef} />
+                  )}
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-[#1B254B] mb-2">Enroll Siswa</h3>
-              <p className="text-slate-500 text-sm mb-4">Tambahkan siswa baru ke dalam sistem, daftarkan siswa ke kelas tertentu, dan verifikasi status pendaftaran.</p>
-              <button 
-                onClick={() => navigate('/dashboard/enroll-siswa')}
-                className="px-4 py-2 bg-[#4318FF] hover:bg-[#3311CC] text-white rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer"
-              >
-                Pendaftaran Siswa
-              </button>
+
+              {/* Right Column (1/3 width): Audit Logs */}
+              <div className="bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm lg:col-span-4 space-y-4 flex flex-col h-full">
+                <h3 className="text-sm font-extrabold text-[#1B254B] flex items-center gap-1.5">
+                  <FiShield className="text-emerald-500" /> Log Aktivitas Terbaru
+                </h3>
+                <div className="flex-1 space-y-3.5 overflow-y-auto max-h-64 lg:max-h-[250px] pr-1 scrollbar-thin">
+                  {[
+                    { user: 'admin@educentral.com', action: 'Mengimpor 45 siswa baru via CSV', time: '2 menit yang lalu' },
+                    { user: 'guru@educentral.com', action: 'Mengunggah modul ajar aljabar', time: '15 menit yang lalu' },
+                    { user: 'admin@educentral.com', action: 'Mengubah kapasitas kelas VII-A', time: '1 jam yang lalu' },
+                    { user: 'siswa@educentral.com', action: 'Menyelesaikan Kuis Aljabar Dasar', time: '2 jam yang lalu' }
+                  ].map((log, idx) => (
+                    <div key={idx} className="text-xs border-b border-slate-50 pb-2.5 last:border-none">
+                      <div className="flex justify-between items-center gap-2">
+                        <span className="font-bold text-[#1B254B] truncate">{log.user}</span>
+                        <span className="text-[10px] text-slate-400 shrink-0">{log.time}</span>
+                      </div>
+                      <p className="text-slate-500 mt-0.5 line-clamp-1">{log.action}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* 3. QUICK ACTIONS SECTION */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-extrabold text-[#1B254B]">Aksi Cepat Dasbor</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button
+                  onClick={() => navigate('/dashboard/admin/impor-massal')}
+                  className="px-4 py-3 bg-[#4318FF] hover:bg-[#3311CC] text-white rounded-xl font-bold shadow-md shadow-[#4318FF]/10 hover:shadow-[#4318FF]/20 active:scale-[0.98] transition-all duration-200 cursor-pointer text-sm flex items-center justify-between border-none"
+                >
+                  <span className="flex items-center gap-2"><FiFileText /> Impor Massal User (CSV)</span>
+                  <FiArrowRight />
+                </button>
+                <button
+                  onClick={() => navigate('/dashboard/admin/kurikulum')}
+                  className="px-4 py-3 bg-[#4318FF] hover:bg-[#3311CC] text-white rounded-xl font-bold shadow-md shadow-[#4318FF]/10 hover:shadow-[#4318FF]/20 active:scale-[0.98] transition-all duration-200 cursor-pointer text-sm flex items-center justify-between border-none"
+                >
+                  <span className="flex items-center gap-2"><FiGrid /> Atur Kurikulum & Mapel</span>
+                  <FiArrowRight />
+                </button>
+                <button
+                  onClick={() => navigate('/dashboard/admin/kalender')}
+                  className="px-4 py-3 bg-[#4318FF] hover:bg-[#3311CC] text-white rounded-xl font-bold shadow-md shadow-[#4318FF]/10 hover:shadow-[#4318FF]/20 active:scale-[0.98] transition-all duration-200 cursor-pointer text-sm flex items-center justify-between border-none"
+                >
+                  <span className="flex items-center gap-2"><FiCalendar /> Buka Kalender Akademik</span>
+                  <FiArrowRight />
+                </button>
+              </div>
             </div>
           </div>
         );
@@ -52,7 +225,12 @@ export default function DashboardHome() {
               </div>
               <h3 className="text-xl font-bold text-[#1B254B] mb-2">Upload Materi</h3>
               <p className="text-slate-500 text-sm mb-4">Unggah dokumen materi ajar, video rekaman pembelajaran, e-book, atau referensi studi mahasiswa.</p>
-              <button className="px-4 py-2 bg-[#4318FF] hover:bg-[#3311CC] text-white rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer">Unggah Berkas</button>
+              <button 
+                onClick={() => navigate('/dashboard/teacher/content?tab=materi')}
+                className="px-4 py-2 bg-[#4318FF] hover:bg-[#3311CC] text-white rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer"
+              >
+                Unggah Berkas
+              </button>
             </div>
             <div className="p-6 bg-white border border-[#E9EDF7] rounded-2xl shadow-[0_4px_20px_0_rgba(112,144,176,0.08)] hover:border-[#4318FF]/30 transition-all duration-300">
               <div className="w-12 h-12 rounded-xl bg-[#E2FBF0] text-[#0F766E] flex items-center justify-center mb-4">
@@ -62,7 +240,12 @@ export default function DashboardHome() {
               </div>
               <h3 className="text-xl font-bold text-[#1B254B] mb-2">Buat Kuis</h3>
               <p className="text-slate-500 text-sm mb-4">Buat latihan soal, kuis pilihan ganda, esai singkat, ujian tengah semester, dan kelola bobot nilai kuis.</p>
-              <button className="px-4 py-2 bg-[#4318FF] hover:bg-[#3311CC] text-white rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer">Buat Kuis Baru</button>
+              <button 
+                onClick={() => navigate('/dashboard/teacher/content?tab=kuis')}
+                className="px-4 py-2 bg-[#4318FF] hover:bg-[#3311CC] text-white rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer"
+              >
+                Buat Kuis Baru
+              </button>
             </div>
           </div>
         );
@@ -123,7 +306,7 @@ export default function DashboardHome() {
 
       {/* Dynamic Role-specific Action Panels */}
       <div className="text-left">
-        <h3 className="text-lg font-bold text-[#1B254B] mb-4">Aksi Cepat ({role})</h3>
+        <h3 className="text-lg font-bold text-[#1B254B] mb-4">Dasbor Utama</h3>
         {renderRoleContent()}
       </div>
     </div>

@@ -180,18 +180,20 @@ export default function Dashboard() {
 
   const handleLogout = () => {
     const token = localStorage.getItem('token');
+    const refreshToken = localStorage.getItem('refreshToken');
     if (token) {
-      localStorage.setItem('backupToken', token);
-      localStorage.setItem('backupTokenTime', Date.now().toString());
-      
-      // Auto clean after 64 seconds
-      setTimeout(() => {
-        localStorage.removeItem('backupToken');
-        localStorage.removeItem('backupTokenTime');
-      }, 64000);
+      const graceSession = {
+        token,
+        refreshToken,
+        role,
+        user,
+        logoutAt: Date.now()
+      };
+      localStorage.setItem('grace_session', JSON.stringify(graceSession));
     }
     localStorage.removeItem('token');
-    navigate('/login');
+    localStorage.removeItem('refreshToken');
+    navigate('/');
   };
 
   return (

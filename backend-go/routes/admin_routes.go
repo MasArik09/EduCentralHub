@@ -27,5 +27,9 @@ func AdminRoutes(router *gin.Engine) {
 		// New User Management endpoints
 		adminGroup.POST("/users", controllers.CreateUser)
 		adminGroup.POST("/users/import", controllers.ImportUsersBulk)
+
+		// Calendar Academic endpoints
+		adminGroup.GET("/calendar-events", controllers.GetAllCalendarEvents)
+		adminGroup.POST("/calendar-events", controllers.CreateCalendarEvent)
 	}
 }

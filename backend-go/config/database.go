@@ -16,7 +16,7 @@ var DB *gorm.DB
 // ConnectDatabase initializes the connection to the PostgreSQL database using GORM.
 func ConnectDatabase() {
 	// Connection parameters as requested
-	host := "host.docker.internal"
+	host := "localhost"
 	user := "postgres"
 	password := "123"
 	dbname := "educentralhub"

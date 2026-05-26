@@ -41,6 +41,7 @@ func main() {
 		&models.Material{},
 		&models.Quiz{},
 		&models.QuizAttempt{},
+		&models.CalendarEvent{},
 	)
 	if err != nil {
 		log.Fatalf("Failed to perform auto-migration: %v", err)
