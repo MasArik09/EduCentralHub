@@ -12,7 +12,7 @@ export default function TeacherSidebar() {
 
   return (
     <>
-      <div className="text-xs font-semibold text-[#A3AED0] uppercase tracking-widest px-3 pt-4 mb-2">Teacher Actions</div>
+      <div className="text-xs font-semibold text-[#5F6368] uppercase tracking-widest px-3 pt-4 mb-2">Teacher Actions</div>
       
       {menuItems.map((item) => {
         const Icon = item.icon;
@@ -22,21 +22,21 @@ export default function TeacherSidebar() {
             to={item.to}
             end={item.end}
             className={({ isActive }) =>
-              `w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-semibold transition-all text-left relative ${
+              `w-full flex items-center justify-between px-3 py-2.5 rounded-md font-semibold transition-all text-left relative ${
                 isActive
-                  ? 'text-[#4318FF] bg-[#F4F7FE]'
-                  : 'text-[#A3AED0] hover:text-[#1B254B] hover:bg-[#F4F7FE]'
+                  ? 'text-[#1A73E8] bg-gray-100/70'
+                  : 'text-[#5F6368] hover:text-[#202124] hover:bg-gray-50'
               }`
             }
           >
             {({ isActive }) => (
               <>
                 <div className="flex items-center gap-3">
-                  <Icon className={`w-5 h-5 ${isActive ? 'text-[#4318FF]' : 'text-[#A3AED0]'}`} />
+                  <Icon className={`w-5 h-5 ${isActive ? 'text-[#1A73E8]' : 'text-[#5F6368]'}`} />
                   <span>{item.label}</span>
                 </div>
                 {isActive && (
-                  <div className="absolute right-0 top-2 bottom-2 w-1 bg-[#4318FF] rounded-l-md"></div>
+                  <div className="absolute right-0 top-2 bottom-2 w-1 bg-[#1A73E8] rounded-l-md"></div>
                 )}
               </>
             )}

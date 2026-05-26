@@ -78,7 +78,7 @@ export default function ClassList() {
       title: 'Kelas Dibuat!',
       text: `Kelas ${className} berhasil dibuat dengan kode: ${code}`,
       icon: 'success',
-      confirmButtonColor: '#4318FF'
+      confirmButtonColor: '#1A73E8'
     });
 
     setClassName('');
@@ -96,7 +96,7 @@ export default function ClassList() {
         title: 'Kode Salah!',
         text: 'Kelas dengan kode tersebut tidak ditemukan.',
         icon: 'error',
-        confirmButtonColor: '#4318FF'
+        confirmButtonColor: '#1A73E8'
       });
       return;
     }
@@ -126,7 +126,7 @@ export default function ClassList() {
       title: 'Siswa Ditambahkan!',
       text: `${studentName} berhasil ditambahkan ke kelas ${classExists.name}.`,
       icon: 'success',
-      confirmButtonColor: '#4318FF'
+      confirmButtonColor: '#1A73E8'
     });
 
     setStudentName('');
@@ -139,40 +139,40 @@ export default function ClassList() {
       {/* Forms Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Create Class Form */}
-        <div className="bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm space-y-4">
-          <h3 className="text-md font-extrabold text-[#1B254B] flex items-center gap-2">
-            <FiBook className="text-[#4318FF] w-5 h-5" />
+        <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-none space-y-4">
+          <h3 className="text-md font-bold text-[#202124] flex items-center gap-2">
+            <FiBook className="text-[#1A73E8] w-5 h-5" />
             Buat Kelas Baru
           </h3>
           <form onSubmit={handleCreateClass} className="space-y-3">
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Nama Kelas & Rombel</label>
+              <label className="block text-xs font-semibold text-[#5F6368] uppercase tracking-wider mb-1">Nama Kelas & Rombel</label>
               <input
                 type="text"
                 required
-                className="w-full px-4 py-2.5 bg-[#F4F7FE] border border-slate-200/80 rounded-xl text-[#1B254B] focus:outline-none focus:border-[#4318FF] text-sm"
+                className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-[#202124] placeholder-slate-400 focus:outline-none focus:border-[#1A73E8] text-sm"
                 placeholder="Contoh: Matematika VII-A"
                 value={className}
                 onChange={(e) => setClassName(e.target.value)}
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Mata Pelajaran / Topik</label>
+              <label className="block text-xs font-semibold text-[#5F6368] uppercase tracking-wider mb-1">Mata Pelajaran / Topik</label>
               <input
                 type="text"
                 required
-                className="w-full px-4 py-2.5 bg-[#F4F7FE] border border-slate-200/80 rounded-xl text-[#1B254B] focus:outline-none focus:border-[#4318FF] text-sm"
+                className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-[#202124] placeholder-slate-400 focus:outline-none focus:border-[#1A73E8] text-sm"
                 placeholder="Contoh: Aljabar Linier"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Jadwal Kelas</label>
+              <label className="block text-xs font-semibold text-[#5F6368] uppercase tracking-wider mb-1">Jadwal Kelas</label>
               <input
                 type="text"
                 required
-                className="w-full px-4 py-2.5 bg-[#F4F7FE] border border-slate-200/80 rounded-xl text-[#1B254B] focus:outline-none focus:border-[#4318FF] text-sm"
+                className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-[#202124] placeholder-slate-400 focus:outline-none focus:border-[#1A73E8] text-sm"
                 placeholder="Contoh: Senin, 08:00 - 09:30"
                 value={schedule}
                 onChange={(e) => setSchedule(e.target.value)}
@@ -180,7 +180,7 @@ export default function ClassList() {
             </div>
             <button
               type="submit"
-              className="w-full py-2.5 bg-[#4318FF] hover:bg-[#3311CC] text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer mt-4"
+              className="w-full py-2.5 bg-[#1A73E8] hover:bg-[#1557B0] text-white rounded-lg font-semibold transition-colors duration-150 flex items-center justify-center gap-2 cursor-pointer mt-4 border-none"
             >
               <FiPlus /> Buat Kelas
             </button>
@@ -188,39 +188,39 @@ export default function ClassList() {
         </div>
 
         {/* Enroll Student Form */}
-        <div className="bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm space-y-4">
-          <h3 className="text-md font-extrabold text-[#1B254B] flex items-center gap-2">
-            <FiUsers className="text-emerald-500 w-5 h-5" />
+        <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-none space-y-4">
+          <h3 className="text-md font-bold text-[#202124] flex items-center gap-2">
+            <FiUsers className="text-emerald-600 w-5 h-5" />
             Tambah Siswa via Kode Kelas
           </h3>
           <form onSubmit={handleEnrollStudent} className="space-y-3">
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Nama Lengkap Siswa</label>
+              <label className="block text-xs font-semibold text-[#5F6368] uppercase tracking-wider mb-1">Nama Lengkap Siswa</label>
               <input
                 type="text"
                 required
-                className="w-full px-4 py-2.5 bg-[#F4F7FE] border border-slate-200/80 rounded-xl text-[#1B254B] focus:outline-none focus:border-[#4318FF] text-sm"
+                className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-[#202124] placeholder-slate-400 focus:outline-none focus:border-[#1A73E8] text-sm"
                 placeholder="Contoh: Ahmad Rafli"
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Email / Username Siswa</label>
+              <label className="block text-xs font-semibold text-[#5F6368] uppercase tracking-wider mb-1">Email / Username Siswa</label>
               <input
                 type="email"
                 required
-                className="w-full px-4 py-2.5 bg-[#F4F7FE] border border-slate-200/80 rounded-xl text-[#1B254B] focus:outline-none focus:border-[#4318FF] text-sm"
+                className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-[#202124] placeholder-slate-400 focus:outline-none focus:border-[#1A73E8] text-sm"
                 placeholder="Contoh: siswa@educentral.hub"
                 value={studentEmail}
                 onChange={(e) => setStudentEmail(e.target.value)}
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Kode Kelas Target</label>
+              <label className="block text-xs font-semibold text-[#5F6368] uppercase tracking-wider mb-1">Kode Kelas Target</label>
               <select
                 required
-                className="w-full px-4 py-2.5 bg-[#F4F7FE] border border-slate-200/80 rounded-xl text-[#1B254B] focus:outline-none focus:border-[#4318FF] text-sm cursor-pointer"
+                className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-[#202124] focus:outline-none focus:border-[#1A73E8] text-sm cursor-pointer"
                 value={targetClassCode}
                 onChange={(e) => setTargetClassCode(e.target.value)}
               >
@@ -232,7 +232,7 @@ export default function ClassList() {
             </div>
             <button
               type="submit"
-              className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer mt-4"
+              className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold transition-colors duration-150 flex items-center justify-center gap-2 cursor-pointer mt-4 border-none"
             >
               <FiPlus /> Daftarkan Siswa
             </button>
@@ -241,17 +241,17 @@ export default function ClassList() {
       </div>
 
       {/* Class List Table */}
-      <div className="bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm space-y-4">
-        <h3 className="text-md font-extrabold text-[#1B254B]">Daftar Kelas Aktif Saya</h3>
+      <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-none space-y-4">
+        <h3 className="text-md font-bold text-[#202124]">Daftar Kelas Aktif Saya</h3>
         {classes.length === 0 ? (
-          <div className="text-center py-8 text-slate-400 border border-dashed border-slate-200 rounded-2xl">
+          <div className="text-center py-8 text-[#5F6368] border border-dashed border-gray-200 rounded-lg">
             Belum ada kelas aktif. Buat kelas baru di atas.
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-2xl border border-slate-100">
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
-                <tr className="bg-[#F8FAFC] text-[#1B254B] border-b border-slate-100 font-bold">
+                <tr className="bg-gray-50 text-[#202124] border-b border-gray-200 font-bold">
                   <th className="px-6 py-4 w-12 text-center">No.</th>
                   <th className="px-6 py-4">Kode Kelas</th>
                   <th className="px-6 py-4">Nama Kelas & Rombel</th>
@@ -260,16 +260,16 @@ export default function ClassList() {
                   <th className="px-6 py-4 text-center">Siswa Enrolled</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-gray-200">
                 {classes.map((cls, index) => (
-                  <tr key={cls.id} className="hover:bg-[#F4F7FE]/40 transition-colors">
-                    <td className="px-6 py-4 text-center text-slate-400 font-medium">{index + 1}</td>
-                    <td className="px-6 py-4 font-bold text-[#4318FF]">{cls.code}</td>
-                    <td className="px-6 py-4 font-semibold text-[#1B254B]">{cls.name}</td>
-                    <td className="px-6 py-4 text-slate-500">{cls.subject}</td>
+                  <tr key={cls.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 text-center text-gray-400 font-medium">{index + 1}</td>
+                    <td className="px-6 py-4 font-bold text-[#1A73E8]">{cls.code}</td>
+                    <td className="px-6 py-4 font-semibold text-[#202124]">{cls.name}</td>
+                    <td className="px-6 py-4 text-[#5F6368]">{cls.subject}</td>
                     <td className="px-6 py-4 font-medium text-slate-600">{cls.schedule}</td>
                     <td className="px-6 py-4 text-center">
-                      <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-full">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-md">
                         <FiUsers className="w-3.5 h-3.5" />
                         {cls.studentCount} Siswa
                       </span>

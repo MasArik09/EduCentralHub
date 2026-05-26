@@ -60,24 +60,24 @@ export default function Attendance() {
       title: 'Absensi Disimpan!',
       text: `Data absensi tanggal ${attendanceDate} berhasil disimpan.`,
       icon: 'success',
-      confirmButtonColor: '#4318FF'
+      confirmButtonColor: '#1A73E8'
     });
   };
 
   return (
-    <div className="bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm space-y-6 text-left">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
-        <h3 className="text-md font-extrabold text-[#1B254B] flex items-center gap-2">
-          <FiCheckSquare className="text-[#4318FF] w-5 h-5" />
+    <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-none space-y-6 text-left">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-200 pb-5">
+        <h3 className="text-md font-bold text-[#202124] flex items-center gap-2">
+          <FiCheckSquare className="text-[#1A73E8] w-5 h-5" />
           Absensi Siswa Online
         </h3>
         
         <div className="flex flex-wrap gap-3">
           {/* Class Select */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Kelas:</span>
+            <span className="text-xs font-semibold text-[#5F6368] uppercase tracking-wider">Kelas:</span>
             <select
-              className="px-3 py-2 bg-[#F4F7FE] border border-slate-200/80 rounded-xl text-[#1B254B] text-xs font-semibold focus:outline-none cursor-pointer"
+              className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-[#202124] text-xs font-semibold focus:outline-none cursor-pointer"
               value={selectedClassCode}
               onChange={(e) => setSelectedClassCode(e.target.value)}
             >
@@ -90,10 +90,10 @@ export default function Attendance() {
 
           {/* Date Select */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1"><FiCalendar /> Tanggal:</span>
+            <span className="text-xs font-semibold text-[#5F6368] uppercase tracking-wider flex items-center gap-1"><FiCalendar /> Tanggal:</span>
             <input
               type="date"
-              className="px-3 py-1.5 bg-[#F4F7FE] border border-slate-200/80 rounded-xl text-[#1B254B] text-xs font-semibold focus:outline-none"
+              className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-[#202124] text-xs font-semibold focus:outline-none"
               value={attendanceDate}
               onChange={(e) => setAttendanceDate(e.target.value)}
             />
@@ -102,49 +102,49 @@ export default function Attendance() {
       </div>
 
       {!selectedClassCode ? (
-        <div className="text-center py-12 text-slate-400 border border-dashed border-slate-200 rounded-2xl">
+        <div className="text-center py-12 text-[#5F6368] border border-dashed border-gray-200 rounded-lg">
           Silakan pilih kelas terlebih dahulu untuk melakukan absensi.
         </div>
       ) : activeStudents.length === 0 ? (
-        <div className="text-center py-12 text-slate-400 border border-dashed border-slate-200 rounded-2xl">
+        <div className="text-center py-12 text-[#5F6368] border border-dashed border-gray-200 rounded-lg">
           Belum ada siswa terdaftar di kelas ini. Daftarkan siswa di tab "Kelola Kelas".
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="overflow-x-auto rounded-2xl border border-slate-100">
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
-                <tr className="bg-[#F8FAFC] text-[#1B254B] border-b border-slate-100 font-bold">
+                <tr className="bg-gray-50 text-[#202124] border-b border-gray-200 font-bold">
                   <th className="px-6 py-4 w-12 text-center">No.</th>
                   <th className="px-6 py-4">Nama Siswa</th>
                   <th className="px-6 py-4">Email</th>
                   <th className="px-6 py-4 text-center">Status Kehadiran</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-gray-200">
                 {activeStudents.map((student, index) => (
-                  <tr key={student.id} className="hover:bg-[#F4F7FE]/40 transition-colors">
-                    <td className="px-6 py-4 text-center text-slate-400 font-medium">{index + 1}</td>
-                    <td className="px-6 py-4 font-semibold text-[#1B254B]">{student.name}</td>
-                    <td className="px-6 py-4 text-slate-500">{student.email}</td>
+                  <tr key={student.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 text-center text-gray-400 font-medium">{index + 1}</td>
+                    <td className="px-6 py-4 font-semibold text-[#202124]">{student.name}</td>
+                    <td className="px-6 py-4 text-[#5F6368]">{student.email}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
                         {['Hadir', 'Izin', 'Sakit', 'Alpa'].map((status) => {
                           const isSelected = attendance[student.id] === status;
-                          let btnStyle = 'bg-slate-50 text-slate-400 hover:bg-slate-100';
+                          let btnStyle = 'bg-gray-50 text-[#5F6368] hover:bg-gray-100 border border-gray-200';
                           
                           if (isSelected) {
-                            if (status === 'Hadir') btnStyle = 'bg-emerald-500 text-white font-bold shadow-md shadow-emerald-500/20';
-                            if (status === 'Izin') btnStyle = 'bg-amber-500 text-white font-bold shadow-md shadow-amber-500/20';
-                            if (status === 'Sakit') btnStyle = 'bg-sky-500 text-white font-bold shadow-md shadow-sky-500/20';
-                            if (status === 'Alpa') btnStyle = 'bg-rose-500 text-white font-bold shadow-md shadow-rose-500/20';
+                            if (status === 'Hadir') btnStyle = 'bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold';
+                            if (status === 'Izin') btnStyle = 'bg-amber-50 text-amber-700 border border-amber-200 font-semibold';
+                            if (status === 'Sakit') btnStyle = 'bg-sky-50 text-sky-700 border border-sky-200 font-semibold';
+                            if (status === 'Alpa') btnStyle = 'bg-rose-50 text-rose-700 border border-rose-200 font-semibold';
                           }
 
                           return (
                             <button
                               key={status}
                               onClick={() => handleStatusChange(student.id, status)}
-                              className={`px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer border-none transition-all duration-200 ${btnStyle}`}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer border transition-colors duration-150 ${btnStyle}`}
                             >
                               {status}
                             </button>
@@ -158,14 +158,14 @@ export default function Attendance() {
             </table>
           </div>
 
-          <div className="flex justify-between items-center bg-[#F4F7FE] p-4 rounded-2xl">
-            <span className="text-xs text-[#1B254B] font-semibold flex items-center gap-1.5">
-              <FiAward className="text-[#4318FF]" /> Total: {activeStudents.length} Siswa | Hadir:{' '}
+          <div className="flex justify-between items-center bg-gray-50 border border-gray-200 p-4 rounded-lg">
+            <span className="text-xs text-[#202124] font-semibold flex items-center gap-1.5">
+              <FiAward className="text-[#1A73E8]" /> Total: {activeStudents.length} Siswa | Hadir:{' '}
               {Object.values(attendance).filter(v => v === 'Hadir').length}
             </span>
             <button
               onClick={handleSaveAttendance}
-              className="flex items-center gap-2 bg-[#4318FF] hover:bg-[#3311CC] text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md shadow-[#4318FF]/10 border-none cursor-pointer"
+              className="flex items-center gap-2 bg-[#1A73E8] hover:bg-[#1557B0] text-white px-5 py-2.5 rounded-lg text-xs font-semibold border-none cursor-pointer transition-colors duration-150"
             >
               <FiSave /> Simpan Absensi
             </button>

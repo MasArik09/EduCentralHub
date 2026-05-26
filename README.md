@@ -71,6 +71,12 @@ Sistem telah dilengkapi dengan fitur-fitur berstandar industri berikut:
     *   Sinkronisasi Full-Stack: Integrasi endpoint API `GET /api/admin/calendar-events` menggunakan query GORM cerdas dengan ekstraksi tanggal PostgreSQL (EXTRACT MONTH/YEAR) untuk menyaring data berdasarkan filter frontend.
     *   Penyelarasan endpoint data siswa dengan dukungan preloading objek kelas dan pengurutan (sorting) data yang stabil (`name ASC`).
     *   Implementasi Fitur UX Premium **Session Grace Period Re-Login (1 Menit)** dengan pemulihan sesi instan dan notifikasi SweetAlert2 toast di sudut kanan bawah.
+13. **Overhaul Visual Global ke Clean Enterprise SaaS UI (Notion & Google Classroom Inspired):**
+    *   Menghilangkan seluruh gradasi dekoratif, warna neon mencolok, dan shadow tebal di seluruh 20+ halaman/komponen.
+    *   Mengadopsi warna dasar flat abu-abu sangat terang (`#F8F9FA`) dan kartu/cards putih murni (`#FFFFFF`) bergaris batas abu-abu tipis (`border border-gray-200`) sebagai pengganti bayangan tebal.
+    *   Mengubah seluruh lengkungan kasual `rounded-3xl`/`rounded-2xl` menjadi bentuk tegas dan rapi (`rounded-lg` atau `rounded-md`).
+    *   Menyulap tombol dan tautan menu aktif menjadi flat minimalis dengan efek hover halus (`hover:bg-gray-50` atau `hover:text-[#1A73E8]`) tanpa transisi dramatis.
+    *   Menerapkan secara konsisten di Sidebar, Navbar, Beranda, Direktori Siswa, Kalender Akademik, hingga 12 sub-halaman modular Guru.
 
 ---
 

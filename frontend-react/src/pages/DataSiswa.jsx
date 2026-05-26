@@ -40,27 +40,27 @@ export default function DataSiswa() {
   return (
     <div className="w-full space-y-6 bg-transparent">
       {/* Title & Stats */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-5">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-200 pb-5">
         <div>
-          <h2 className="text-2xl font-extrabold text-[#1B254B]">
+          <h2 className="text-2xl font-bold text-[#202124]">
             Direktori Data Siswa
           </h2>
-          <p className="text-slate-500 text-xs mt-1">
+          <p className="text-[#5F6368] text-xs mt-1">
             Lihat, cari, dan kelola seluruh informasi kontak dan kelas siswa di platform EduCentralHub.
           </p>
         </div>
         <button
           onClick={fetchStudents}
           disabled={loading}
-          className="flex items-center gap-2 bg-white text-[#1B254B] border border-[#E0E5F2] hover:bg-gray-50/80 px-4 py-2.5 rounded-xl text-xs font-bold shadow-[0_2px_12px_0_rgba(112,144,176,0.06)] transition-all duration-200"
+          className="flex items-center gap-2 bg-white text-[#202124] border border-gray-200 hover:bg-gray-50 px-4 py-2.5 rounded-lg text-xs font-semibold shadow-none transition-colors duration-150"
         >
-          <FiRefreshCw className={`w-3.5 h-3.5 text-gray-500 ${loading ? 'animate-spin' : ''}`} />
+          <FiRefreshCw className={`w-3.5 h-3.5 text-[#5F6368] ${loading ? 'animate-spin' : ''}`} />
           <span>Refresh Data</span>
         </button>
       </div>
 
       {error && (
-        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 text-sm flex items-center gap-3">
+        <div className="p-4 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-600 text-sm flex items-center gap-3">
           <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
@@ -69,49 +69,49 @@ export default function DataSiswa() {
       )}
 
       {/* Main Table Card */}
-      <div className="bg-white border border-slate-100/80 rounded-3xl shadow-xl shadow-slate-100/50 p-6 md:p-8 space-y-6">
+      <div className="bg-white border border-gray-200 rounded-lg p-6 md:p-8 space-y-6 shadow-none">
         
         {/* Search & Actions Bar */}
         <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
           <div className="relative w-full sm:max-w-md">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#5F6368]">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </span>
             <input
               type="text"
-              className="w-full pl-11 pr-4 py-3 bg-[#F4F7FE]/80 border border-slate-200/70 rounded-2xl text-[#1B254B] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#4318FF]/10 focus:border-[#4318FF] transition-all text-sm"
+              className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-lg text-[#202124] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1A73E8]/10 focus:border-[#1A73E8] transition-colors text-sm"
               placeholder="Cari siswa berdasarkan Nama atau NIS..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
-          <div className="text-xs font-bold text-slate-400 shrink-0 bg-[#F4F7FE] px-4 py-2.5 rounded-xl border border-slate-100">
-            Total Siswa: <span className="text-[#4318FF]">{filteredStudents.length}</span>
+          <div className="text-xs font-semibold text-[#5F6368] shrink-0 bg-gray-50 px-4 py-2.5 rounded-lg border border-gray-200">
+            Total Siswa: <span className="text-[#1A73E8] font-bold">{filteredStudents.length}</span>
           </div>
         </div>
 
         {/* Loading Indicator */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
-            <svg className="animate-spin h-8 w-8 text-[#4318FF]" fill="none" viewBox="0 0 24 24">
+            <svg className="animate-spin h-8 w-8 text-[#1A73E8]" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
             </svg>
-            <span className="text-slate-400 text-sm font-semibold">Mengambil data direktori...</span>
+            <span className="text-[#5F6368] text-sm font-semibold">Mengambil data direktori...</span>
           </div>
         ) : filteredStudents.length === 0 ? (
-          <div className="text-center py-20 text-slate-400 text-sm border border-dashed border-slate-200 rounded-2xl">
+          <div className="text-center py-20 text-[#5F6368] text-sm border border-dashed border-gray-200 rounded-lg">
             Tidak ada data siswa ditemukan yang cocok dengan kriteria pencarian Anda.
           </div>
         ) : (
           /* Modern Minimalist Table */
-          <div className="overflow-x-auto rounded-2xl border border-slate-100">
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
-                <tr className="bg-[#F8FAFC] text-[#1B254B] border-b border-slate-100 font-bold">
+                <tr className="bg-gray-50 text-[#202124] border-b border-gray-200 font-bold">
                   <th className="px-6 py-4 text-xs uppercase tracking-wider w-12 text-center">No.</th>
                   <th className="px-6 py-4 text-xs uppercase tracking-wider">NIS</th>
                   <th className="px-6 py-4 text-xs uppercase tracking-wider">Nama Lengkap</th>
@@ -120,28 +120,28 @@ export default function DataSiswa() {
                   <th className="px-6 py-4 text-xs uppercase tracking-wider">Email</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-gray-200">
                 {filteredStudents.map((student, index) => (
                   <tr 
                     key={student.id} 
-                    className="hover:bg-[#F4F7FE]/40 transition-colors duration-150 group"
+                    className="hover:bg-gray-50 transition-colors duration-150 group"
                   >
                     <td className="px-6 py-4 text-gray-400 font-medium text-center text-xs">
                       {index + 1}
                     </td>
-                    <td className="px-6 py-4 text-slate-500 font-semibold font-mono text-xs">
+                    <td className="px-6 py-4 text-[#5F6368] font-semibold font-mono text-xs">
                       {student.nis || '-'}
                     </td>
-                    <td className="px-6 py-4 text-[#1B254B] font-semibold text-sm">
+                    <td className="px-6 py-4 text-[#202124] font-semibold text-sm">
                       {student.name}
                     </td>
                     <td className="px-6 py-4">
                       {student.class ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold text-[#4318FF] bg-[#4318FF]/10 rounded-full border border-[#4318FF]/5">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold text-[#1A73E8] bg-blue-50/70 rounded-md border border-blue-200/50">
                           {student.class.class_name}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold text-amber-600 bg-amber-50 rounded-full border border-amber-200/50">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold text-amber-600 bg-amber-50/70 rounded-md border border-amber-200/50">
                           Belum Ada Kelas
                         </span>
                       )}
@@ -152,7 +152,7 @@ export default function DataSiswa() {
                           href={`https://wa.me/${student.whatsapp.replace(/\D/g, '')}`} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-[#1B254B] hover:text-[#4318FF] hover:underline flex items-center gap-1.5 font-medium transition-colors"
+                          className="text-[#202124] hover:text-[#1A73E8] hover:underline flex items-center gap-1.5 font-medium transition-colors duration-150"
                         >
                           🟢 {student.whatsapp}
                         </a>
@@ -164,7 +164,7 @@ export default function DataSiswa() {
                       {student.email ? (
                         <a 
                           href={`mailto:${student.email}`}
-                          className="text-slate-500 hover:text-[#4318FF] hover:underline font-medium transition-colors"
+                          className="text-[#5F6368] hover:text-[#1A73E8] hover:underline font-medium transition-colors duration-150"
                         >
                           {student.email}
                         </a>

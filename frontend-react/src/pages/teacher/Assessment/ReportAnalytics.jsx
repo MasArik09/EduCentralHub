@@ -77,10 +77,10 @@ export default function ReportAnalytics() {
           datasets: [{
             label: 'Rata-Rata Nilai Kelas',
             data: averagesByClass,
-            backgroundColor: 'rgba(67, 24, 255, 0.85)',
-            borderColor: '#4318FF',
+            backgroundColor: 'rgba(26, 115, 232, 0.85)',
+            borderColor: '#1A73E8',
             borderWidth: 1.5,
-            borderRadius: 8,
+            borderRadius: 6,
             barThickness: 24,
           }]
         },
@@ -91,22 +91,22 @@ export default function ReportAnalytics() {
             legend: { display: false },
             tooltip: {
               padding: 12,
-              backgroundColor: '#1B254B',
+              backgroundColor: '#202124',
               titleFont: { size: 12, weight: 'bold' },
               bodyFont: { size: 12 },
-              cornerRadius: 12,
+              cornerRadius: 6,
             }
           },
           scales: {
             y: {
               min: 0,
               max: 100,
-              grid: { color: '#F4F7FE' },
-              ticks: { color: '#A3AED0', font: { weight: 'bold', size: 10 } }
+              grid: { color: '#E5E7EB' },
+              ticks: { color: '#5F6368', font: { weight: 'bold', size: 10 } }
             },
             x: {
               grid: { display: false },
-              ticks: { color: '#A3AED0', font: { weight: 'bold', size: 10 } }
+              ticks: { color: '#5F6368', font: { weight: 'bold', size: 10 } }
             }
           }
         }
@@ -124,15 +124,15 @@ export default function ReportAnalytics() {
             label: 'Rata-Rata Skor',
             data: scores,
             fill: true,
-            backgroundColor: 'rgba(67, 24, 255, 0.05)',
-            borderColor: '#4318FF',
-            borderWidth: 3,
+            backgroundColor: 'rgba(26, 115, 232, 0.04)',
+            borderColor: '#1A73E8',
+            borderWidth: 2,
             tension: 0.4,
-            pointBackgroundColor: '#4318FF',
+            pointBackgroundColor: '#1A73E8',
             pointBorderColor: '#FFFFFF',
-            pointBorderWidth: 2,
-            pointRadius: 6,
-            pointHoverRadius: 8,
+            pointBorderWidth: 1.5,
+            pointRadius: 4,
+            pointHoverRadius: 6,
           }]
         },
         options: {
@@ -142,20 +142,20 @@ export default function ReportAnalytics() {
             legend: { display: false },
             tooltip: {
               padding: 12,
-              backgroundColor: '#1B254B',
-              cornerRadius: 12,
+              backgroundColor: '#202124',
+              cornerRadius: 6,
             }
           },
           scales: {
             y: {
               min: 0,
               max: 100,
-              grid: { color: '#F4F7FE' },
-              ticks: { color: '#A3AED0', font: { weight: 'bold', size: 10 } }
+              grid: { color: '#E5E7EB' },
+              ticks: { color: '#5F6368', font: { weight: 'bold', size: 10 } }
             },
             x: {
               grid: { display: false },
-              ticks: { color: '#A3AED0', font: { weight: 'bold', size: 8 } }
+              ticks: { color: '#5F6368', font: { weight: 'bold', size: 8 } }
             }
           }
         }
@@ -181,33 +181,33 @@ export default function ReportAnalytics() {
     <div className="space-y-6 text-left pb-6">
       {/* Overview Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#4318FF] flex items-center justify-center text-xl font-bold shrink-0">
+        <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-none flex items-center gap-4">
+          <div className="w-12 h-12 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl font-bold shrink-0">
             <FiTrendingUp />
           </div>
           <div>
-            <span className="text-xs text-slate-400 block font-semibold uppercase tracking-wider">Rata-Rata Nilai</span>
-            <span className="text-2xl font-black text-[#1B254B]">{overallAvg} / 100</span>
+            <span className="text-xs text-[#5F6368] block font-semibold uppercase tracking-wider">Rata-Rata Nilai</span>
+            <span className="text-2xl font-bold text-[#202124]">{overallAvg} / 100</span>
           </div>
         </div>
 
-        <div className="bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold shrink-0">
+        <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-none flex items-center gap-4">
+          <div className="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold shrink-0">
             <FiAward />
           </div>
           <div>
-            <span className="text-xs text-slate-400 block font-semibold uppercase tracking-wider">Nilai Rata-Rata Tertinggi</span>
-            <span className="text-2xl font-black text-[#1B254B]">{highestScore} / 100</span>
+            <span className="text-xs text-[#5F6368] block font-semibold uppercase tracking-wider">Nilai Rata-Rata Tertinggi</span>
+            <span className="text-2xl font-bold text-[#202124]">{highestScore} / 100</span>
           </div>
         </div>
 
-        <div className="bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl font-bold shrink-0">
+        <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-none flex items-center gap-4">
+          <div className="w-12 h-12 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-xl font-bold shrink-0">
             <FiPieChart />
           </div>
           <div>
-            <span className="text-xs text-slate-400 block font-semibold uppercase tracking-wider">Persentase Ketuntasan</span>
-            <span className="text-2xl font-black text-[#1B254B]">92%</span>
+            <span className="text-xs text-[#5F6368] block font-semibold uppercase tracking-wider">Persentase Ketuntasan</span>
+            <span className="text-2xl font-bold text-[#202124]">92%</span>
           </div>
         </div>
       </div>
@@ -215,14 +215,14 @@ export default function ReportAnalytics() {
       {/* Chart Canvas Panels */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Class Averages Bar Chart */}
-        <div className="bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm space-y-4">
-          <h3 className="text-sm font-extrabold text-[#1B254B] flex items-center gap-1.5">
-            <FiActivity className="text-[#4318FF]" /> Rata-Rata Performa Nilai per Kelas
+        <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-none space-y-4">
+          <h3 className="text-sm font-bold text-[#202124] flex items-center gap-1.5">
+            <FiActivity className="text-[#1A73E8]" /> Rata-Rata Performa Nilai per Kelas
           </h3>
           
-          <div className="h-64 relative flex items-center justify-center bg-[#F8FAFC] border border-[#E9EDF7] rounded-2xl p-4">
+          <div className="h-64 relative flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg p-4">
             {!chartJsLoaded ? (
-              <span className="text-xs text-slate-400">Memuat Chart.js Engine...</span>
+              <span className="text-xs text-[#5F6368]">Memuat Chart.js Engine...</span>
             ) : (
               <canvas ref={barChartRef} />
             )}
@@ -230,14 +230,14 @@ export default function ReportAnalytics() {
         </div>
 
         {/* Quiz Distribution Line Chart */}
-        <div className="bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm space-y-4">
-          <h3 className="text-sm font-extrabold text-[#1B254B] flex items-center gap-1.5">
-            <FiActivity className="text-emerald-500" /> Distribusi Nilai per Topik Tugas
+        <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-none space-y-4">
+          <h3 className="text-sm font-bold text-[#202124] flex items-center gap-1.5">
+            <FiActivity className="text-emerald-600" /> Distribusi Nilai per Topik Tugas
           </h3>
           
-          <div className="h-64 relative flex items-center justify-center bg-[#F8FAFC] border border-[#E9EDF7] rounded-2xl p-4">
+          <div className="h-64 relative flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg p-4">
             {!chartJsLoaded ? (
-              <span className="text-xs text-slate-400">Memuat Chart.js Engine...</span>
+              <span className="text-xs text-[#5F6368]">Memuat Chart.js Engine...</span>
             ) : (
               <canvas ref={lineChartRef} />
             )}
@@ -246,16 +246,16 @@ export default function ReportAnalytics() {
       </div>
 
       {/* Grades Summary Table */}
-      <div className="bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm space-y-4">
-        <h3 className="text-md font-extrabold text-[#1B254B]">Ringkasan Statistik Penilaian Tugas</h3>
+      <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-none space-y-4">
+        <h3 className="text-md font-bold text-[#202124]">Ringkasan Statistik Penilaian Tugas</h3>
         
         {averagesData.length === 0 ? (
-          <p className="text-xs text-slate-400">Belum ada data evaluasi yang terdaftar.</p>
+          <p className="text-xs text-[#5F6368]">Belum ada data evaluasi yang terdaftar.</p>
         ) : (
-          <div className="overflow-x-auto rounded-2xl border border-slate-100">
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
-                <tr className="bg-[#F8FAFC] text-[#1B254B] border-b border-slate-100 font-bold">
+                <tr className="bg-gray-50 text-[#202124] border-b border-gray-200 font-bold">
                   <th className="px-6 py-4 w-12 text-center">No.</th>
                   <th className="px-6 py-4">Nama Kelas</th>
                   <th className="px-6 py-4">Topik Evaluasi</th>
@@ -264,19 +264,19 @@ export default function ReportAnalytics() {
                   <th className="px-6 py-4 text-center">Status Ketuntasan</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-gray-200">
                 {averagesData.map((d, index) => (
-                  <tr key={index} className="hover:bg-[#F4F7FE]/40 transition-colors">
-                    <td className="px-6 py-4 text-center text-slate-400 font-medium">{index + 1}</td>
-                    <td className="px-6 py-4 font-bold text-[#1B254B]">{d.classCode}</td>
-                    <td className="px-6 py-4 font-semibold text-slate-700">{d.task}</td>
-                    <td className="px-6 py-4 text-center text-slate-500">{d.count} Siswa</td>
-                    <td className="px-6 py-4 text-center font-black text-[#4318FF]">{d.avgScore} / 100</td>
+                  <tr key={index} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 text-center text-gray-400 font-medium">{index + 1}</td>
+                    <td className="px-6 py-4 font-bold text-[#202124]">{d.classCode}</td>
+                    <td className="px-6 py-4 font-semibold text-[#5F6368]">{d.task}</td>
+                    <td className="px-6 py-4 text-center text-[#5F6368]">{d.count} Siswa</td>
+                    <td className="px-6 py-4 text-center font-semibold text-[#1A73E8]">{d.avgScore} / 100</td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`px-2.5 py-1 text-[10px] font-bold rounded-full ${
+                      <span className={`px-2.5 py-1 text-[10px] font-semibold rounded-md ${
                         d.avgScore >= 75
-                          ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
-                          : 'bg-rose-50 text-rose-600 border border-rose-100'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                          : 'bg-rose-50 text-rose-700 border border-rose-100'
                       }`}>
                         {d.avgScore >= 75 ? 'TUNTAS' : 'REMEDIAL'}
                       </span>

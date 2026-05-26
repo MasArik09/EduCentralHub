@@ -63,7 +63,7 @@ export default function GradePanel() {
       title: 'Tugas Dinilai!',
       text: `Penilaian untuk ${selectedSub.studentName} berhasil disimpan dengan nilai: ${numScore}`,
       icon: 'success',
-      confirmButtonColor: '#4318FF'
+      confirmButtonColor: '#1A73E8'
     });
 
     // Update class average analytics
@@ -109,17 +109,17 @@ export default function GradePanel() {
     <div className="space-y-6 text-left">
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
         {/* Submissions List Table */}
-        <div className={`bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm space-y-4 ${selectedSub ? 'xl:col-span-7' : 'xl:col-span-12'}`}>
-          <h3 className="text-md font-extrabold text-[#1B254B]">Daftar Tugas Dikumpulkan Siswa</h3>
+        <div className={`bg-white p-6 border border-gray-200 rounded-lg shadow-none space-y-4 ${selectedSub ? 'xl:col-span-7' : 'xl:col-span-12'}`}>
+          <h3 className="text-md font-bold text-[#202124]">Daftar Tugas Dikumpulkan Siswa</h3>
           {submissions.length === 0 ? (
-            <div className="text-center py-8 text-slate-400 border border-dashed border-slate-200 rounded-2xl">
+            <div className="text-center py-8 text-[#5F6368] border border-dashed border-gray-200 rounded-lg">
               Belum ada tugas siswa yang dikumpulkan.
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-2xl border border-slate-100">
+            <div className="overflow-x-auto rounded-lg border border-gray-200">
               <table className="w-full text-left border-collapse text-sm">
                 <thead>
-                  <tr className="bg-[#F8FAFC] text-[#1B254B] border-b border-slate-100 font-bold">
+                  <tr className="bg-gray-50 text-[#202124] border-b border-gray-200 font-bold">
                     <th className="px-6 py-4 w-12 text-center">No.</th>
                     <th className="px-6 py-4">Siswa</th>
                     <th className="px-6 py-4">Kelas</th>
@@ -129,33 +129,33 @@ export default function GradePanel() {
                     <th className="px-6 py-4 text-right">Aksi</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-gray-200">
                   {submissions.map((sub, index) => (
-                    <tr key={sub.id} className="hover:bg-[#F4F7FE]/40 transition-colors">
-                      <td className="px-6 py-4 text-center text-slate-400 font-medium">{index + 1}</td>
-                      <td className="px-6 py-4 font-semibold text-[#1B254B]">{sub.studentName}</td>
-                      <td className="px-6 py-4 font-medium text-slate-600">{sub.classCode}</td>
-                      <td className="px-6 py-4 text-slate-500">{sub.taskTitle}</td>
+                    <tr key={sub.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 text-center text-[#5F6368] font-medium">{index + 1}</td>
+                      <td className="px-6 py-4 font-semibold text-[#202124]">{sub.studentName}</td>
+                      <td className="px-6 py-4 font-medium text-[#5F6368]">{sub.classCode}</td>
+                      <td className="px-6 py-4 text-[#5F6368]">{sub.taskTitle}</td>
                       <td className="px-6 py-4 text-center">
-                        <span className={`px-2.5 py-1 text-[10px] font-bold rounded-full border ${
+                        <span className={`px-2.5 py-1 text-[10px] font-semibold rounded-md border ${
                           sub.status === 'Sudah Dinilai'
-                            ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
-                            : 'bg-amber-50 text-amber-600 border-amber-100'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : 'bg-amber-50 text-amber-700 border-amber-200'
                         }`}>
                           {sub.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-center font-bold text-[#1B254B]">
+                      <td className="px-6 py-4 text-center font-bold text-[#202124]">
                         {sub.score !== null ? (
-                          <span className="text-[#4318FF] font-black">{sub.score}</span>
+                          <span className="text-[#1A73E8] font-bold">{sub.score}</span>
                         ) : (
-                          <span className="text-slate-400">-</span>
+                          <span className="text-[#5F6368] font-normal">-</span>
                         )}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <button
                           onClick={() => handleOpenGrade(sub)}
-                          className="flex items-center gap-1 bg-[#4318FF]/10 text-[#4318FF] hover:bg-[#4318FF] hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all border-none cursor-pointer"
+                          className="flex items-center gap-1 bg-[#1A73E8]/10 text-[#1A73E8] hover:bg-[#1A73E8] hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors duration-150 border-none cursor-pointer"
                         >
                           Koreksi
                         </button>
@@ -170,56 +170,56 @@ export default function GradePanel() {
 
         {/* Grading Details Panel */}
         {selectedSub && (
-          <div className="bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm xl:col-span-5 space-y-4 flex flex-col justify-between">
+          <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-none xl:col-span-5 space-y-4 flex flex-col justify-between">
             <div className="space-y-4">
-              <div className="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h4 className="font-extrabold text-[#1B254B] flex items-center gap-2">
-                  <FiCheckSquare className="text-[#4318FF]" /> Detail Koreksi Tugas
+              <div className="flex justify-between items-center border-b border-gray-200 pb-3">
+                <h4 className="font-bold text-[#202124] flex items-center gap-2">
+                  <FiCheckSquare className="text-[#1A73E8]" /> Detail Koreksi Tugas
                 </h4>
                 <button
                   onClick={() => setSelectedSub(null)}
-                  className="text-slate-400 font-bold border-none bg-transparent hover:text-slate-600 text-sm cursor-pointer"
+                  className="text-[#5F6368] hover:text-[#202124] font-semibold border-none bg-transparent text-sm cursor-pointer"
                 >
                   Batal
                 </button>
               </div>
 
               <div className="space-y-2 text-xs">
-                <p><strong className="text-slate-500">Nama Siswa:</strong> <span className="font-semibold text-[#1B254B]">{selectedSub.studentName} ({selectedSub.classCode})</span></p>
-                <p><strong className="text-slate-500">Tugas:</strong> <span className="font-semibold text-[#1B254B]">{selectedSub.taskTitle}</span></p>
-                <p><strong className="text-slate-500">Tanggal Kirim:</strong> <span className="font-semibold text-slate-600">{selectedSub.submissionDate}</span></p>
+                <p><strong className="text-[#5F6368]">Nama Siswa:</strong> <span className="font-semibold text-[#202124]">{selectedSub.studentName} ({selectedSub.classCode})</span></p>
+                <p><strong className="text-[#5F6368]">Tugas:</strong> <span className="font-semibold text-[#202124]">{selectedSub.taskTitle}</span></p>
+                <p><strong className="text-[#5F6368]">Tanggal Kirim:</strong> <span className="font-semibold text-[#5F6368]">{selectedSub.submissionDate}</span></p>
               </div>
 
-              <div className="bg-[#F8FAFC] border border-[#E0E5F2] rounded-2xl p-4 space-y-2">
-                <span className="text-[10px] font-black text-[#A3AED0] uppercase tracking-wider block">Jawaban Siswa:</span>
-                <p className="text-xs text-[#1B254B] font-medium leading-relaxed whitespace-pre-wrap">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-2">
+                <span className="text-[10px] font-semibold text-[#5F6368] uppercase tracking-wider block">Jawaban Siswa:</span>
+                <p className="text-xs text-[#202124] font-medium leading-relaxed whitespace-pre-wrap">
                   {selectedSub.content}
                 </p>
               </div>
 
               <form onSubmit={handleSaveGrade} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">
-                    <FiAward className="text-[#4318FF]" /> Berikan Skor (0 - 100)
+                  <label className="block text-xs font-semibold text-[#5F6368] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <FiAward className="text-[#1A73E8]" /> Berikan Skor (0 - 100)
                   </label>
                   <input
                     type="number"
                     min="0"
                     max="100"
                     required
-                    className="w-full px-4 py-2.5 bg-[#F4F7FE] border border-slate-200/80 rounded-xl text-sm font-bold text-[#1B254B] focus:outline-none focus:border-[#4318FF]"
+                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-bold text-[#202124] focus:outline-none focus:border-[#1A73E8]"
                     placeholder="Contoh: 95"
                     value={score}
                     onChange={(e) => setScore(e.target.value)}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">
-                    <FiMessageSquare className="text-emerald-500" /> Feedback / Catatan Guru
+                  <label className="block text-xs font-semibold text-[#5F6368] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <FiMessageSquare className="text-emerald-600" /> Feedback / Catatan Guru
                   </label>
                   <textarea
                     rows="3"
-                    className="w-full px-4 py-2.5 bg-[#F4F7FE] border border-slate-200/80 rounded-xl text-xs focus:outline-none focus:border-[#4318FF]"
+                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-[#1A73E8]"
                     placeholder="Contoh: Penjelasan langkahmu sudah sangat runtun dan benar! Pertahankan."
                     value={feedback}
                     onChange={(e) => setFeedback(e.target.value)}
@@ -227,7 +227,7 @@ export default function GradePanel() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-2.5 bg-[#4318FF] hover:bg-[#3311CC] text-white rounded-xl font-bold transition-all border-none cursor-pointer shadow-md shadow-[#4318FF]/10"
+                  className="w-full py-2.5 bg-[#1A73E8] hover:bg-[#1557B0] text-white rounded-lg font-semibold transition-colors duration-150 border-none cursor-pointer shadow-none"
                 >
                   Simpan Penilaian
                 </button>

@@ -10,23 +10,23 @@ export default function ClassManagement() {
   return (
     <div className="w-full bg-transparent space-y-6 text-left">
       {/* Module Title */}
-      <div className="border-b border-slate-100 pb-5">
-        <h2 className="text-2xl font-extrabold text-[#1B254B]">
+      <div className="border-b border-gray-200 pb-5">
+        <h2 className="text-2xl font-bold text-[#202124]">
           Manajemen Kelas & Siswa
         </h2>
-        <p className="text-slate-500 text-xs mt-1">
+        <p className="text-[#5F6368] text-xs mt-1">
           Kelola kelas, atur jadwal mingguan, lakukan absensi online harian, dan siarkan pengumuman broadcast kepada siswa Anda.
         </p>
       </div>
 
       {/* Tabs Navigation */}
-      <div className="flex border-b border-[#E9EDF7] overflow-x-auto gap-4">
+      <div className="flex border-b border-gray-200 overflow-x-auto gap-4">
         <button
           onClick={() => setActiveTab('classes')}
-          className={`flex items-center gap-2 pb-4 text-sm font-bold transition-all border-b-2 cursor-pointer border-none px-2 ${
+          className={`flex items-center gap-2 pb-4 text-sm font-semibold transition-colors cursor-pointer border-b-2 px-2 bg-transparent -mb-[2px] ${
             activeTab === 'classes'
-              ? 'text-[#4318FF] border-[#4318FF]'
-              : 'text-[#A3AED0] hover:text-[#1B254B] border-transparent'
+              ? 'text-[#1A73E8] border-[#1A73E8]'
+              : 'text-[#5F6368] hover:text-[#202124] border-transparent'
           }`}
         >
           <FiUsers className="w-4 h-4" />
@@ -35,10 +35,10 @@ export default function ClassManagement() {
         
         <button
           onClick={() => setActiveTab('attendance')}
-          className={`flex items-center gap-2 pb-4 text-sm font-bold transition-all border-b-2 cursor-pointer border-none px-2 ${
+          className={`flex items-center gap-2 pb-4 text-sm font-semibold transition-colors cursor-pointer border-b-2 px-2 bg-transparent -mb-[2px] ${
             activeTab === 'attendance'
-              ? 'text-[#4318FF] border-[#4318FF]'
-              : 'text-[#A3AED0] hover:text-[#1B254B] border-transparent'
+              ? 'text-[#1A73E8] border-[#1A73E8]'
+              : 'text-[#5F6368] hover:text-[#202124] border-transparent'
           }`}
         >
           <FiCheckSquare className="w-4 h-4" />
@@ -47,10 +47,10 @@ export default function ClassManagement() {
 
         <button
           onClick={() => setActiveTab('announcements')}
-          className={`flex items-center gap-2 pb-4 text-sm font-bold transition-all border-b-2 cursor-pointer border-none px-2 ${
+          className={`flex items-center gap-2 pb-4 text-sm font-semibold transition-colors cursor-pointer border-b-2 px-2 bg-transparent -mb-[2px] ${
             activeTab === 'announcements'
-              ? 'text-[#4318FF] border-[#4318FF]'
-              : 'text-[#A3AED0] hover:text-[#1B254B] border-transparent'
+              ? 'text-[#1A73E8] border-[#1A73E8]'
+              : 'text-[#5F6368] hover:text-[#202124] border-transparent'
           }`}
         >
           <FiBell className="w-4 h-4" />

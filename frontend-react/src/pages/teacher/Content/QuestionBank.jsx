@@ -56,7 +56,7 @@ export default function QuestionBank() {
       title: 'Soal Ditambahkan!',
       text: 'Pertanyaan berhasil disimpan ke dalam Bank Soal.',
       icon: 'success',
-      confirmButtonColor: '#4318FF'
+      confirmButtonColor: '#1A73E8'
     });
 
     setQuestionText('');
@@ -72,7 +72,7 @@ export default function QuestionBank() {
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#E31A1A',
-      cancelButtonColor: '#A3AED0',
+      cancelButtonColor: '#5F6368',
       confirmButtonText: 'Ya, Hapus!',
       cancelButtonText: 'Batal'
     }).then((result) => {
@@ -88,31 +88,31 @@ export default function QuestionBank() {
   return (
     <div className="space-y-6 text-left">
       {/* Add Question Form */}
-      <div className="bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm space-y-4">
-        <h3 className="text-md font-extrabold text-[#1B254B] flex items-center gap-2">
-          <FiDatabase className="text-[#4318FF] w-5 h-5" />
+      <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-none space-y-4">
+        <h3 className="text-md font-bold text-[#202124] flex items-center gap-2">
+          <FiDatabase className="text-[#1A73E8] w-5 h-5" />
           Tambah Soal ke Bank Soal (Reusable)
         </h3>
         <form onSubmit={handleAddQuestion} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-2">
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Topik / Kategori Soal</label>
+              <label className="block text-xs font-semibold text-[#5F6368] uppercase tracking-wider mb-1">Topik / Kategori Soal</label>
               <input
                 type="text"
                 required
-                className="w-full px-4 py-2.5 bg-[#F4F7FE] border border-slate-200/80 rounded-xl text-[#1B254B] focus:outline-none focus:border-[#4318FF] text-sm"
+                className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-[#202124] focus:outline-none focus:border-[#1A73E8] text-sm"
                 placeholder="Contoh: Matematika - Aljabar, Fisika - Dinamika Gerak"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Bobot Skor</label>
+              <label className="block text-xs font-semibold text-[#5F6368] uppercase tracking-wider mb-1">Bobot Skor</label>
               <input
                 type="number"
                 required
                 min="1"
-                className="w-full px-4 py-2.5 bg-[#F4F7FE] border border-slate-200/80 rounded-xl text-[#1B254B] focus:outline-none focus:border-[#4318FF] text-sm"
+                className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-[#202124] focus:outline-none focus:border-[#1A73E8] text-sm"
                 value={score}
                 onChange={(e) => setScore(e.target.value)}
               />
@@ -120,11 +120,11 @@ export default function QuestionBank() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Teks Pertanyaan</label>
+            <label className="block text-xs font-semibold text-[#5F6368] uppercase tracking-wider mb-1">Teks Pertanyaan</label>
             <input
               type="text"
               required
-              className="w-full px-4 py-2.5 bg-[#F4F7FE] border border-slate-200/80 rounded-xl text-[#1B254B] focus:outline-none focus:border-[#4318FF] text-sm font-semibold"
+              className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-[#202124] focus:outline-none focus:border-[#1A73E8] text-sm font-semibold"
               placeholder="Masukkan bunyi pertanyaan pilihan ganda..."
               value={questionText}
               onChange={(e) => setQuestionText(e.target.value)}
@@ -140,12 +140,12 @@ export default function QuestionBank() {
                   name="correct-answer-bank"
                   checked={correctAnswer === idx}
                   onChange={() => setCorrectAnswer(idx)}
-                  className="w-4 h-4 text-[#4318FF] focus:ring-[#4318FF] cursor-pointer"
+                  className="w-4 h-4 text-[#1A73E8] focus:ring-[#1A73E8] cursor-pointer"
                 />
                 <input
                   type="text"
                   required
-                  className="w-full px-4 py-2 bg-[#F4F7FE]/80 border border-slate-200/60 rounded-xl text-[#1B254B] focus:outline-none focus:border-[#4318FF] text-xs font-medium"
+                  className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-[#202124] focus:outline-none focus:border-[#1A73E8] text-xs font-medium"
                   placeholder={`Opsi Pilihan ${String.fromCharCode(65 + idx)}`}
                   value={opt}
                   onChange={(e) => handleOptionChange(idx, e.target.value)}
@@ -153,14 +153,14 @@ export default function QuestionBank() {
               </div>
             ))}
           </div>
-          <span className="text-[10px] text-slate-400 italic block mt-1">
+          <span className="text-[10px] text-[#5F6368] italic block mt-1">
             *Tandai tombol lingkaran di sebelah opsi untuk menetapkan kunci jawaban yang benar.
           </span>
 
           <div className="flex justify-end pt-2">
             <button
               type="submit"
-              className="flex items-center gap-2 bg-[#4318FF] hover:bg-[#3311CC] text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-md shadow-[#4318FF]/10 border-none cursor-pointer"
+              className="flex items-center gap-2 bg-[#1A73E8] hover:bg-[#1557B0] text-white px-6 py-2.5 rounded-lg font-semibold border-none cursor-pointer transition-colors duration-150"
             >
               <FiPlus /> Simpan ke Bank Soal
             </button>
@@ -169,17 +169,17 @@ export default function QuestionBank() {
       </div>
 
       {/* Questions Table */}
-      <div className="bg-white p-6 border border-[#E9EDF7] rounded-3xl shadow-sm space-y-4">
-        <h3 className="text-md font-extrabold text-[#1B254B]">Daftar Kumpulan Soal Reusable</h3>
+      <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-none space-y-4">
+        <h3 className="text-md font-bold text-[#202124]">Daftar Kumpulan Soal Reusable</h3>
         {questions.length === 0 ? (
-          <div className="text-center py-8 text-slate-400 border border-dashed border-slate-200 rounded-2xl">
+          <div className="text-center py-8 text-[#5F6368] border border-dashed border-gray-200 rounded-lg">
             Belum ada soal tersimpan di Bank Soal.
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-2xl border border-slate-100">
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
-                <tr className="bg-[#F8FAFC] text-[#1B254B] border-b border-slate-100 font-bold">
+                <tr className="bg-gray-50 text-[#202124] border-b border-gray-200 font-bold">
                   <th className="px-6 py-4 w-12 text-center">No.</th>
                   <th className="px-6 py-4">Topik</th>
                   <th className="px-6 py-4">Teks Soal</th>
@@ -188,16 +188,16 @@ export default function QuestionBank() {
                   <th className="px-6 py-4 text-right">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-gray-200">
                 {questions.map((q, index) => (
-                  <tr key={q.id} className="hover:bg-[#F4F7FE]/40 transition-colors">
-                    <td className="px-6 py-4 text-center text-slate-400 font-medium">{index + 1}</td>
+                  <tr key={q.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 text-center text-gray-400 font-medium">{index + 1}</td>
                     <td className="px-6 py-4">
-                      <span className="inline-flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 rounded-lg">
+                      <span className="inline-flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-md">
                         <FiTag /> {q.topic}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-semibold text-[#1B254B] max-w-xs">{q.questionText}</td>
+                    <td className="px-6 py-4 font-semibold text-[#202124] max-w-xs">{q.questionText}</td>
                     <td className="px-6 py-4 text-xs space-y-1">
                       {q.options.map((opt, oIdx) => (
                         <div
@@ -205,18 +205,18 @@ export default function QuestionBank() {
                           className={`px-2 py-0.5 rounded ${
                             q.correctAnswer === oIdx
                               ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-100'
-                              : 'text-slate-500'
+                              : 'text-[#5F6368]'
                           }`}
                         >
                           {String.fromCharCode(65 + oIdx)}. {opt} {q.correctAnswer === oIdx && '✔'}
                         </div>
                       ))}
                     </td>
-                    <td className="px-6 py-4 text-center font-bold text-[#1B254B]">{q.score}</td>
+                    <td className="px-6 py-4 text-center font-bold text-[#202124]">{q.score}</td>
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => handleDelete(q.id)}
-                        className="p-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg transition-all border-none cursor-pointer inline-flex items-center justify-center"
+                        className="p-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg transition-colors border-none cursor-pointer inline-flex items-center justify-center"
                       >
                         <FiTrash2 className="w-4 h-4" />
                       </button>

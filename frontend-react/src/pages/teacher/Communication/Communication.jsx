@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import Swal from 'sweetalert2';
 import { FiSend, FiMessageSquare, FiUser, FiCircle } from 'react-icons/fi';
 
 export default function Communication() {
@@ -93,26 +92,26 @@ export default function Communication() {
 
   return (
     <div className="w-full bg-transparent space-y-6 text-left">
-      <div className="border-b border-slate-100 pb-5">
-        <h2 className="text-2xl font-extrabold text-[#1B254B]">
+      <div className="border-b border-gray-200 pb-5">
+        <h2 className="text-2xl font-bold text-[#202124]">
           Pusat Komunikasi Guru & Siswa
         </h2>
-        <p className="text-slate-500 text-xs mt-1">
+        <p className="text-[#5F6368] text-xs mt-1">
           Hubungi siswa secara personal melalui pesan instan interaktif dengan simulasi respons balik otomatis.
         </p>
       </div>
 
       {/* Main Messaging Layout */}
-      <div className="bg-white border border-[#E9EDF7] rounded-3xl shadow-sm grid grid-cols-1 lg:grid-cols-12 overflow-hidden h-[550px]">
+      <div className="bg-white border border-gray-200 rounded-lg shadow-none grid grid-cols-1 lg:grid-cols-12 overflow-hidden h-[550px]">
         {/* Left contacts list */}
-        <div className="lg:col-span-4 border-r border-[#E9EDF7] flex flex-col h-full bg-[#F8FAFC]/50">
-          <div className="p-4 border-b border-[#E9EDF7] bg-white">
-            <span className="text-xs font-black text-[#1B254B] uppercase tracking-wider block">Kontak Siswa</span>
+        <div className="lg:col-span-4 border-r border-gray-200 flex flex-col h-full bg-gray-50/30">
+          <div className="p-4 border-b border-gray-200 bg-white">
+            <span className="text-xs font-bold text-[#202124] uppercase tracking-wider block">Kontak Siswa</span>
           </div>
           
-          <div className="flex-1 overflow-y-auto divide-y divide-slate-100/60">
+          <div className="flex-1 overflow-y-auto divide-y divide-gray-200">
             {students.length === 0 ? (
-              <p className="text-xs text-slate-400 p-4 text-center">Belum ada daftar kontak siswa.</p>
+              <p className="text-xs text-[#5F6368] p-4 text-center">Belum ada daftar kontak siswa.</p>
             ) : (
               students.map((student) => {
                 const isSelected = selectedStudent?.id === student.id;
@@ -121,13 +120,13 @@ export default function Communication() {
                   <button
                     key={student.id}
                     onClick={() => setSelectedStudent(student)}
-                    className={`w-full p-4 flex items-center gap-3 text-left transition-all cursor-pointer border-none ${
+                    className={`w-full p-4 flex items-center gap-3 text-left transition-colors cursor-pointer border-none ${
                       isSelected
-                        ? 'bg-white border-l-4 border-[#4318FF]'
-                        : 'bg-transparent hover:bg-slate-100/40'
+                        ? 'bg-white border-l-4 border-[#1A73E8]'
+                        : 'bg-transparent hover:bg-gray-100/40'
                     }`}
                   >
-                    <div className="w-10 h-10 rounded-full bg-[#F4F7FE] flex items-center justify-center font-bold text-[#4318FF] border border-[#E0E5F2] shrink-0 relative">
+                    <div className="w-10 h-10 rounded-full bg-gray-100/70 flex items-center justify-center font-bold text-[#1A73E8] border border-gray-200 shrink-0 relative">
                       <FiUser className="w-5 h-5" />
                       <span className="absolute bottom-0 right-0">
                         <FiCircle className={`w-3.5 h-3.5 rounded-full ${student.online ? 'bg-emerald-500 text-emerald-500' : 'bg-slate-300 text-slate-300'}`} />
@@ -135,10 +134,10 @@ export default function Communication() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex justify-between items-center">
-                        <h4 className="text-xs font-bold text-[#1B254B] truncate">{student.name}</h4>
-                        <span className="text-[9px] font-black text-[#4318FF] bg-[#4318FF]/10 px-2 py-0.5 rounded-full shrink-0">{student.classCode}</span>
+                        <h4 className="text-xs font-bold text-[#202124] truncate">{student.name}</h4>
+                        <span className="text-[9px] font-bold text-[#1A73E8] bg-blue-50/70 border border-blue-200/50 px-2 py-0.5 rounded-md shrink-0">{student.classCode}</span>
                       </div>
-                      <p className="text-[11px] text-slate-400 truncate mt-0.5">{lastMsg}</p>
+                      <p className="text-[11px] text-[#5F6368] truncate mt-0.5">{lastMsg}</p>
                     </div>
                   </button>
                 );
@@ -152,22 +151,22 @@ export default function Communication() {
           {selectedStudent ? (
             <>
               {/* Chat Header */}
-              <div className="p-4 border-b border-[#E9EDF7] flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#F4F7FE] flex items-center justify-center font-bold text-[#4318FF] border border-[#E0E5F2]">
+              <div className="p-4 border-b border-gray-200 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-gray-100/70 flex items-center justify-center font-bold text-[#1A73E8] border border-gray-200">
                   <FiUser className="w-4.5 h-4.5" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-[#1B254B]">{selectedStudent.name}</h4>
-                  <span className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider block">
+                  <h4 className="text-xs font-bold text-[#202124]">{selectedStudent.name}</h4>
+                  <span className="text-[9px] text-[#5F6368] font-semibold uppercase tracking-wider block">
                     {selectedStudent.online ? 'Online' : 'Offline'} • Kelas {selectedStudent.classCode}
                   </span>
                 </div>
               </div>
 
               {/* Chat Messages list */}
-              <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#F8FAFC]">
+              <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50/50">
                 {activeMessages.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-slate-400 text-xs">
+                  <div className="h-full flex flex-col items-center justify-center text-[#5F6368] text-xs">
                     <FiMessageSquare className="w-8 h-8 text-slate-300 mb-1" />
                     Kirim pesan pertama Anda untuk memulai percakapan.
                   </div>
@@ -176,13 +175,13 @@ export default function Communication() {
                     const isTeacher = msg.sender === 'teacher';
                     return (
                       <div key={idx} className={`flex ${isTeacher ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-[70%] rounded-2xl px-4 py-2.5 text-xs shadow-sm relative ${
+                        <div className={`max-w-[70%] rounded-lg px-4 py-2.5 text-xs shadow-none relative ${
                           isTeacher
-                            ? 'bg-[#4318FF] text-white rounded-tr-none'
-                            : 'bg-white text-[#1B254B] border border-[#E9EDF7] rounded-tl-none'
+                            ? 'bg-[#1A73E8] text-white rounded-tr-none'
+                            : 'bg-white text-[#202124] border border-gray-200 rounded-tl-none'
                         }`}>
                           <p className="leading-relaxed font-semibold">{msg.text}</p>
-                          <span className={`text-[8px] font-medium block text-right mt-1 ${isTeacher ? 'text-indigo-200' : 'text-slate-400'}`}>
+                          <span className={`text-[8px] font-medium block text-right mt-1 ${isTeacher ? 'text-indigo-200' : 'text-[#5F6368]'}`}>
                             {msg.time}
                           </span>
                         </div>
@@ -194,25 +193,25 @@ export default function Communication() {
               </div>
 
               {/* Chat Message Input form */}
-              <form onSubmit={handleSendMessage} className="p-4 border-t border-[#E9EDF7] flex gap-2">
+              <form onSubmit={handleSendMessage} className="p-4 border-t border-gray-200 flex gap-2">
                 <input
                   type="text"
                   required
                   placeholder="Ketik pesan balasan di sini..."
-                  className="flex-1 px-4 py-2.5 bg-[#F4F7FE] border border-slate-200/80 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#4318FF]"
+                  className="flex-1 px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-xs font-semibold focus:outline-none focus:border-[#1A73E8] text-[#202124]"
                   value={inputMsg}
                   onChange={(e) => setInputMsg(e.target.value)}
                 />
                 <button
                   type="submit"
-                  className="bg-[#4318FF] hover:bg-[#3311CC] text-white p-2.5 rounded-xl flex items-center justify-center shrink-0 border-none transition-all cursor-pointer shadow-md shadow-[#4318FF]/20"
+                  className="bg-[#1A73E8] hover:bg-[#1557B0] text-white p-2.5 rounded-lg flex items-center justify-center shrink-0 border-none transition-colors duration-150 cursor-pointer shadow-none"
                 >
                   <FiSend className="w-4.5 h-4.5" />
                 </button>
               </form>
             </>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-slate-400 text-xs">
+            <div className="h-full flex flex-col items-center justify-center text-[#5F6368] text-xs">
               <FiMessageSquare className="w-12 h-12 text-slate-300 mb-2" />
               Pilih kontak siswa untuk memulai komunikasi.
             </div>
