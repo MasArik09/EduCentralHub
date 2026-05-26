@@ -4,8 +4,8 @@ import { FiUser, FiUpload, FiUsers, FiLayers, FiGrid, FiCalendar, FiActivity, Fi
 
 export default function Sidebar({ role, sidebarOpen, setSidebarOpen, user, handleLogout }) {
   return (
-    <aside className={`bg-white border-r border-gray-200 w-64 h-full flex-shrink-0 flex flex-col transition-transform duration-300 z-30 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} absolute md:relative`}>
-      <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+    <aside className={`bg-white/70 backdrop-blur-md border-r border-white/20 w-64 h-full flex-shrink-0 flex flex-col transition-transform duration-300 z-30 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} absolute md:relative shadow-sm`}>
+      <div className="p-6 border-b border-white/20 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-[#1A73E8] flex items-center justify-center font-bold text-white shadow-none">
             E
@@ -335,9 +335,9 @@ export default function Sidebar({ role, sidebarOpen, setSidebarOpen, user, handl
       </nav>
 
       {/* User Card & Logout */}
-      <div className="p-4 border-t border-gray-200 bg-white">
+      <div className="p-4 border-t border-white/20 bg-white/40">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-gray-100/70 border border-gray-200 flex items-center justify-center font-bold text-[#1A73E8] capitalize">
+          <div className="w-10 h-10 rounded-full bg-white/60 border border-white/20 flex items-center justify-center font-bold text-[#1A73E8] capitalize">
             {user?.name?.[0] || 'U'}
           </div>
           <div className="min-w-0 flex-1">

@@ -1,259 +1,193 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2';
-import { FiUpload, FiPlus } from 'react-icons/fi';
+import { FiAlertTriangle, FiX, FiCheckCircle } from 'react-icons/fi';
 
+// Modular sub-components (extracted to keep parent under 300 lines)
+import CsvDropZone from './components/CsvDropZone';
+import PreviewTable from './components/PreviewTable';
+
+/**
+ * ImporMassal — Bulk student import page.
+ * Handles CSV parsing, inline WhatsApp editing, and multipart upload to backend.
+ */
 export default function ImporMassal() {
   const [classesList, setClassesList] = useState([]);
-  const [studentsList, setStudentsList] = useState([]);
-  const [classIdInput, setClassIdInput] = useState('');
-  const [selectedStudentIds, setSelectedStudentIds] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [lastSelectedIndex, setLastSelectedIndex] = useState(null);
-  
-  const [loading, setLoading] = useState(false);
+  const [csvFile, setCsvFile] = useState(null);
+  const [csvPreview, setCsvPreview] = useState([]);
+  const [isDragging, setIsDragging] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [error, setError] = useState('');
+  const [toast, setToast] = useState(null);
 
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3500);
+  };
+
+  // ── Fetch available classes on mount ──
   useEffect(() => {
+    const fetchClasses = async () => {
+      const token = localStorage.getItem('token');
+      try {
+        const res = await axios.get('http://localhost:8080/api/admin/classes', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setClassesList(res.data || []);
+      } catch {
+        setError('Gagal memuat daftar kelas.');
+      }
+    };
     fetchClasses();
   }, []);
 
-  useEffect(() => {
-    if (classIdInput) {
-      fetchAvailableStudents(classIdInput);
-    } else {
-      setStudentsList([]);
-    }
-    setSelectedStudentIds([]);
-    setLastSelectedIndex(null);
-  }, [classIdInput]);
-
-  useEffect(() => {
-    setLastSelectedIndex(null);
-  }, [searchTerm]);
-
-  const fetchClasses = async () => {
-    const token = localStorage.getItem('token');
-    try {
-      const res = await axios.get('http://localhost:8080/api/admin/classes', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const classes = res.data || [];
-      setClassesList(classes);
-      if (classes.length > 0) {
-        setClassIdInput(classes[0].id.toString());
+  // ── CSV Parsing — maps values to fixed column spec ──
+  const parseCSV = (text) => {
+    const lines = text.trim().split('\n');
+    if (lines.length < 2) return [];
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+      const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+      if (values.some(v => v !== '')) {
+        rows.push({
+          nis: values[0] || '',
+          nama_lengkap: values[1] || '',
+          kelas: values[2] || '',
+          no_whatsapp: values[3] || '',
+          email: values[4] || '',
+        });
       }
-    } catch (err) {
-      console.error('Failed to fetch classes:', err);
-      setError('Gagal memuat daftar kelas.');
     }
+    return rows;
   };
 
-  const fetchAvailableStudents = async (classId) => {
-    setLoading(true);
-    setError('');
-    const token = localStorage.getItem('token');
-    try {
-      const res = await axios.get(`http://localhost:8080/api/admin/available-students?class_id=${classId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setStudentsList(res.data || []);
-    } catch (err) {
-      console.error('Failed to fetch available students:', err);
-      setError('Gagal memuat daftar siswa yang belum terdaftar.');
-      setStudentsList([]);
-    } finally {
-      setLoading(false);
+  /** Validates and accepts a CSV file, parses its content into preview state */
+  const handleFileAccept = (file) => {
+    if (!file) return;
+    if (!file.name.endsWith('.csv')) {
+      showToast('Format file tidak valid. Harap unggah file .CSV.', 'error');
+      return;
     }
+    setCsvFile(file);
+    const reader = new FileReader();
+    reader.onload = (e) => setCsvPreview(parseCSV(e.target.result));
+    reader.readAsText(file);
   };
 
-  const filteredStudents = studentsList.filter(student => 
-    student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (student.nis && student.nis.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-
-  const handleCheckboxToggle = (studentId, currentIndex, e) => {
-    if (e && e.shiftKey && lastSelectedIndex !== null) {
-      const start = Math.min(lastSelectedIndex, currentIndex);
-      const end = Math.max(lastSelectedIndex, currentIndex);
-      const rangeIds = filteredStudents.slice(start, end + 1).map(s => s.id);
-      
-      setSelectedStudentIds(prev => {
-        const wasSelected = prev.includes(studentId);
-        if (wasSelected) {
-          return prev.filter(id => !rangeIds.includes(id));
-        } else {
-          return Array.from(new Set([...prev, ...rangeIds]));
-        }
-      });
-    } else {
-      setSelectedStudentIds(prev => 
-        prev.includes(studentId) ? prev.filter(id => id !== studentId) : [...prev, studentId]
-      );
-      setLastSelectedIndex(currentIndex);
-    }
+  const handleFileRemove = () => {
+    setCsvFile(null);
+    setCsvPreview([]);
   };
 
-  const handleSelectAllToggle = () => {
-    const filteredIds = filteredStudents.map(s => s.id);
-    const allFilteredSelected = filteredIds.every(id => selectedStudentIds.includes(id));
-
-    if (allFilteredSelected) {
-      setSelectedStudentIds(prev => prev.filter(id => !filteredIds.includes(id)));
-    } else {
-      setSelectedStudentIds(prev => [...prev, ...filteredIds.filter(id => !prev.includes(id))]);
-    }
+  /** Updates a WhatsApp number in the preview table for inline editing */
+  const handleWhatsAppChange = (rowIndex, newValue) => {
+    setCsvPreview(prev => {
+      const updated = [...prev];
+      updated[rowIndex] = { ...updated[rowIndex], no_whatsapp: newValue };
+      return updated;
+    });
   };
 
-  const handleBulkEnroll = async () => {
-    if (selectedStudentIds.length === 0 || !classIdInput) return;
+  /** Generates and downloads a sample CSV template file */
+  const handleDownloadTemplate = () => {
+    const header = 'NIS,Nama Lengkap,Kelas,No. WhatsApp,Email';
+    const rows = [
+      '10001,Ahmad Fauzan,10 IPA-A,081234567890,ahmad.fauzan@email.com',
+      '10002,Siti Nurhaliza,10 IPA-A,,siti.nurhaliza@email.com',
+      '10003,Budi Santoso,10 IPA-B,089876543210,budi.santoso@email.com',
+    ];
+    const blob = new Blob([[header, ...rows].join('\n') + '\n'], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'template_impor_siswa.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  };
+
+  /**
+   * Rebuilds CSV from (possibly edited) preview data and uploads as multipart/form-data.
+   * This ensures any inline WhatsApp edits are captured in the final file.
+   */
+  const handleBulkImport = async () => {
+    if (!csvFile) return;
+    for (let i = 0; i < csvPreview.length; i++) {
+      const row = csvPreview[i];
+      if (!row.nis || !row.nama_lengkap || !row.kelas || !row.email) {
+        showToast(`Baris ke-${i + 1}: NIS, Nama, Kelas, dan Email wajib diisi.`, 'error');
+        return;
+      }
+    }
     setSubmitLoading(true);
     const token = localStorage.getItem('token');
     try {
-      const selectedClass = classesList.find(c => c.id.toString() === classIdInput);
-      const className = selectedClass ? selectedClass.class_name : 'kelas target';
-      await axios.post('http://localhost:8080/api/admin/enroll-bulk', {
-        class_id: parseInt(classIdInput, 10),
-        student_ids: selectedStudentIds
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const header = 'NIS,Nama Lengkap,Kelas,No. WhatsApp,Email';
+      const csvRows = csvPreview.map(row =>
+        [row.nis, row.nama_lengkap, row.kelas, row.no_whatsapp, row.email]
+          .map(v => `"${(v || '').replace(/"/g, '""')}"`)
+          .join(',')
+      );
+      const blob = new Blob([[header, ...csvRows].join('\n')], { type: 'text/csv' });
+      const formData = new FormData();
+      formData.append('file', new File([blob], csvFile.name, { type: 'text/csv' }));
 
-      setSelectedStudentIds([]);
-      setSearchTerm('');
-      
-      Swal.fire({
-        title: 'Berhasil!',
-        text: `Berhasil mendaftarkan siswa ke ${className}.`,
-        icon: 'success',
-        confirmButtonColor: '#4318FF'
+      const res = await axios.post('http://localhost:8080/api/admin/users/import', formData, {
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
-      fetchAvailableStudents(classIdInput);
+      showToast(res.data?.message || `Berhasil mengimpor ${csvPreview.length} siswa.`, 'success');
+      handleFileRemove();
     } catch (err) {
-      console.error(err);
-      Swal.fire({
-        title: 'Gagal!',
-        text: err.response?.data?.error || 'Gagal mendaftarkan siswa secara massal.',
-        icon: 'error',
-        confirmButtonColor: '#4318FF'
-      });
+      showToast(err.response?.data?.error || 'Gagal memproses impor massal.', 'error');
     } finally {
       setSubmitLoading(false);
     }
   };
 
   return (
-    <div className="w-full bg-transparent space-y-6 text-left">
-      <div className="border-b border-slate-100 pb-5">
-        <h2 className="text-2xl font-extrabold text-[#1B254B]">
-          Impor Massal (Bulk Enroll)
-        </h2>
-        <p className="text-slate-500 text-xs mt-1">
-          Daftarkan banyak siswa sekaligus ke dalam kelas tertentu dengan cepat dalam satu transaksi terintegrasi.
-        </p>
+    <div className="w-full bg-transparent space-y-6 text-left pb-12">
+      {/* Title Header */}
+      <div className="border-b border-gray-200 pb-5">
+        <h2 className="text-2xl font-bold text-[#202124]">Impor Massal Siswa</h2>
+        <p className="text-[#5F6368] text-xs mt-1">Unggah file CSV untuk mendaftarkan banyak siswa sekaligus ke dalam kelas tertentu dalam satu transaksi cepat.</p>
       </div>
 
+      {/* Error Banner */}
       {error && (
-        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 text-sm">
-          <span>⚠️ {error}</span>
+        <div className="p-3.5 rounded-lg bg-rose-50/80 backdrop-blur-sm border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-2">
+          <FiAlertTriangle className="w-4 h-4 shrink-0" />
+          <span>{error}</span>
+          <button onClick={() => setError('')} className="ml-auto text-rose-400 hover:text-rose-600 bg-transparent border-none cursor-pointer"><FiX className="w-3.5 h-3.5" /></button>
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-4">
-          <div className="bg-white border border-slate-100 rounded-3xl shadow-sm p-6 space-y-6">
-            <h3 className="text-md font-extrabold text-[#1B254B]">Target Kelas</h3>
-            <div className="space-y-2">
-              <select
-                required
-                className="w-full px-4 py-3 bg-[#F4F7FE] border border-slate-200 rounded-xl text-[#1B254B] font-semibold cursor-pointer"
-                value={classIdInput}
-                onChange={(e) => setClassIdInput(e.target.value)}
-              >
-                {classesList.map((cls) => (
-                  <option key={cls.id} value={cls.id.toString()}>
-                    {cls.class_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="bg-[#4318FF]/5 rounded-2xl p-4 space-y-2">
-              <div className="text-xs font-semibold text-slate-500">Jumlah Siswa Terpilih</div>
-              <div className="text-2xl font-black text-[#4318FF]">{selectedStudentIds.length} Siswa</div>
-            </div>
-            <button
-              onClick={handleBulkEnroll}
-              disabled={selectedStudentIds.length === 0 || !classIdInput || submitLoading}
-              className="w-full bg-[#4318FF] hover:bg-[#3311CC] text-white py-3.5 rounded-xl font-bold transition-all disabled:opacity-40 cursor-pointer"
-            >
-              Impor Sekarang
-            </button>
-          </div>
-        </div>
+      {/* Drop-zone (sub-component) */}
+      <CsvDropZone
+        csvFile={csvFile}
+        csvPreviewCount={csvPreview.length}
+        isDragging={isDragging}
+        setIsDragging={setIsDragging}
+        onFileAccept={handleFileAccept}
+        onFileRemove={handleFileRemove}
+        onDownloadTemplate={handleDownloadTemplate}
+      />
 
-        <div className="lg:col-span-8 bg-white border border-slate-100 rounded-3xl shadow-sm p-6 md:p-8 space-y-6">
-          <div className="relative w-full">
-            <input
-              type="text"
-              className="w-full px-4 py-3 bg-[#F4F7FE]/80 border border-slate-200 rounded-2xl text-[#1B254B]"
-              placeholder="Cari nama atau NIS..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+      {/* Preview Table (sub-component) */}
+      <PreviewTable
+        csvPreview={csvPreview}
+        onWhatsAppChange={handleWhatsAppChange}
+        onSubmit={handleBulkImport}
+        submitLoading={submitLoading}
+      />
 
-          {loading ? (
-            <div className="text-center py-20 text-slate-400">Memuat...</div>
-          ) : filteredStudents.length === 0 ? (
-            <div className="text-center py-20 text-slate-400 border border-dashed border-slate-200 rounded-2xl">
-              Tidak ada data siswa ditemukan.
-            </div>
+      {/* Toast Notification */}
+      {toast && (
+        <div className={`fixed bottom-5 right-5 z-[9999] flex items-center gap-2.5 px-4 py-3 rounded-lg shadow-xl border backdrop-blur-md animate-fade-in transition-all duration-300 ${toast.type === 'success' ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800' : 'bg-rose-50/90 border-rose-200 text-rose-800'}`}>
+          {toast.type === 'success' ? (
+            <FiCheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
           ) : (
-            <div className="overflow-x-auto rounded-2xl border border-slate-100">
-              <table className="w-full text-left border-collapse text-sm">
-                <thead>
-                  <tr className="bg-[#F8FAFC] text-[#1B254B] border-b border-slate-100 font-bold">
-                    <th className="px-4 py-4 w-12 text-center">
-                      <input
-                        type="checkbox"
-                        checked={filteredStudents.length > 0 && filteredStudents.map(s => s.id).every(id => selectedStudentIds.includes(id))}
-                        onChange={handleSelectAllToggle}
-                        className="cursor-pointer w-4 h-4"
-                      />
-                    </th>
-                    <th className="px-4 py-4">NIS</th>
-                    <th className="px-6 py-4">Nama Lengkap</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {filteredStudents.map((student, index) => {
-                    const isSelected = selectedStudentIds.includes(student.id);
-                    return (
-                      <tr 
-                        key={student.id}
-                        onClick={(e) => handleCheckboxToggle(student.id, index, e)}
-                        className={`hover:bg-[#F4F7FE]/40 transition-colors cursor-pointer ${isSelected ? 'bg-[#4318FF]/5' : ''}`}
-                      >
-                        <td className="px-4 py-3.5 text-center" onClick={(e) => e.stopPropagation()}>
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={(e) => handleCheckboxToggle(student.id, index, e)}
-                            className="cursor-pointer w-4 h-4"
-                          />
-                        </td>
-                        <td className="px-4 py-3.5 font-mono text-xs">{student.nis || '-'}</td>
-                        <td className="px-6 py-3.5 font-semibold">{student.name}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+            <FiAlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
           )}
+          <span className="text-xs font-bold">{toast.message}</span>
         </div>
-      </div>
+      )}
     </div>
   );
 }

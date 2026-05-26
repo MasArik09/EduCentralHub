@@ -409,7 +409,7 @@ func BulkMoveClassMembers(c *gin.Context) {
 		return
 	}
 
-	if toClass.MaxStudents > 0 && currentStudentsCount + studentsToMoveCount > int64(toClass.MaxStudents) {
+	if toClass.MaxStudents > 0 && currentStudentsCount+studentsToMoveCount > int64(toClass.MaxStudents) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Gagal! Kapasitas kelas sudah penuh. Maksimal hanya muat %d siswa.", toClass.MaxStudents)})
 		return
 	}

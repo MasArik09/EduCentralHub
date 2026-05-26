@@ -104,7 +104,7 @@ export default function DashboardHome() {
           <div className="space-y-6 text-left">
             {/* 1. TOP STATS CARDS GRID (4 Kolom) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              <div className="bg-white p-5 border border-gray-200 rounded-lg flex items-center gap-4">
+              <div className="bg-white/70 backdrop-blur-md p-5 border border-white/20 rounded-lg flex items-center gap-4 shadow-sm hover:bg-white/90 hover:border-white/30 transition-all duration-150">
                 <div className="w-12 h-12 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl font-bold shrink-0">
                   <FiUsers />
                 </div>
@@ -114,7 +114,7 @@ export default function DashboardHome() {
                 </div>
               </div>
 
-              <div className="bg-white p-5 border border-gray-200 rounded-lg flex items-center gap-4">
+              <div className="bg-white/70 backdrop-blur-md p-5 border border-white/20 rounded-lg flex items-center gap-4 shadow-sm hover:bg-white/90 hover:border-white/30 transition-all duration-150">
                 <div className="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold shrink-0">
                   <FiAward />
                 </div>
@@ -124,7 +124,7 @@ export default function DashboardHome() {
                 </div>
               </div>
 
-              <div className="bg-white p-5 border border-gray-200 rounded-lg flex items-center gap-4">
+              <div className="bg-white/70 backdrop-blur-md p-5 border border-white/20 rounded-lg flex items-center gap-4 shadow-sm hover:bg-white/90 hover:border-white/30 transition-all duration-150">
                 <div className="w-12 h-12 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xl font-bold shrink-0">
                   <FiLayers />
                 </div>
@@ -134,7 +134,7 @@ export default function DashboardHome() {
                 </div>
               </div>
 
-              <div className="bg-white p-5 border border-gray-200 rounded-lg flex items-center gap-4">
+              <div className="bg-white/70 backdrop-blur-md p-5 border border-white/20 rounded-lg flex items-center gap-4 shadow-sm hover:bg-white/90 hover:border-white/30 transition-all duration-150">
                 <div className="w-12 h-12 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-xl font-bold shrink-0">
                   <FiActivity />
                 </div>
@@ -148,11 +148,11 @@ export default function DashboardHome() {
             {/* 2. DUAL-COLUMN GRAPH & LOGS */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               {/* Left Column (2/3 width): Kehadiran Chart */}
-              <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-none lg:col-span-8 space-y-4">
+              <div className="bg-white/70 backdrop-blur-md p-6 border border-white/20 rounded-lg shadow-sm lg:col-span-8 space-y-4">
                 <h3 className="text-sm font-bold text-[#202124] flex items-center gap-1.5">
                   <FiActivity className="text-[#1A73E8]" /> Tren Kehadiran & Partisipasi Belajar (Minggu Ini)
                 </h3>
-                <div className="h-64 relative flex items-center justify-center bg-[#F8F9FA] border border-gray-200 rounded-lg p-4">
+                <div className="h-64 relative flex items-center justify-center bg-[#F8F9FA]/40 backdrop-blur-sm border border-white/20 rounded-lg p-4">
                   {!chartJsLoaded ? (
                     <span className="text-xs text-[#5F6368]">Memuat Chart Engine...</span>
                   ) : (
@@ -162,7 +162,7 @@ export default function DashboardHome() {
               </div>
 
               {/* Right Column (1/3 width): Audit Logs */}
-              <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-none lg:col-span-4 space-y-4 flex flex-col h-full">
+              <div className="bg-white/70 backdrop-blur-md p-6 border border-white/20 rounded-lg shadow-sm lg:col-span-4 space-y-4 flex flex-col h-full">
                 <h3 className="text-sm font-bold text-[#202124] flex items-center gap-1.5">
                   <FiShield className="text-emerald-600" /> Log Aktivitas Terbaru
                 </h3>
@@ -217,7 +217,7 @@ export default function DashboardHome() {
       case 'teacher':
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-none hover:border-gray-300 transition-colors duration-150">
+            <div className="p-6 bg-white/70 backdrop-blur-md border border-white/20 rounded-lg shadow-sm hover:bg-white/90 hover:border-white/30 transition-all duration-150">
               <div className="w-12 h-12 rounded-lg bg-gray-50 text-[#1A73E8] flex items-center justify-center mb-4">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -232,7 +232,7 @@ export default function DashboardHome() {
                 Unggah Berkas
               </button>
             </div>
-            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-none hover:border-gray-300 transition-colors duration-150">
+            <div className="p-6 bg-white/70 backdrop-blur-md border border-white/20 rounded-lg shadow-sm hover:bg-white/90 hover:border-white/30 transition-all duration-150">
               <div className="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -253,7 +253,7 @@ export default function DashboardHome() {
       default:
         return (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-none hover:border-gray-300 transition-colors duration-150">
+            <div className="p-6 bg-white/70 backdrop-blur-md border border-white/20 rounded-lg shadow-sm hover:bg-white/90 hover:border-white/30 transition-all duration-150">
               <div className="w-12 h-12 rounded-lg bg-gray-50 text-[#1A73E8] flex items-center justify-center mb-4">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -263,7 +263,7 @@ export default function DashboardHome() {
               <p className="text-[#5F6368] text-xs mb-4">Pelajari modul ajar aktif, tonton video pembelajaran mandiri, dan unduh slide presentasi mata kuliah.</p>
               <button className="px-3.5 py-1.5 bg-[#1A73E8] hover:bg-[#1557B0] text-white rounded-lg text-xs font-semibold transition-colors duration-150 cursor-pointer border-none">Buka Materi</button>
             </div>
-            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-none hover:border-gray-300 transition-colors duration-150">
+            <div className="p-6 bg-white/70 backdrop-blur-md border border-white/20 rounded-lg shadow-sm hover:bg-white/90 hover:border-white/30 transition-all duration-150">
               <div className="w-12 h-12 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center mb-4">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
@@ -273,7 +273,7 @@ export default function DashboardHome() {
               <p className="text-[#5F6368] text-xs mb-4">Selesaikan tugas mingguan yang sedang aktif, ikuti kuis latihan, dan tinjau riwayat pengerjaan Anda.</p>
               <button className="px-3.5 py-1.5 bg-[#1A73E8] hover:bg-[#1557B0] text-white rounded-lg text-xs font-semibold transition-colors duration-150 cursor-pointer border-none">Mulai Kuis</button>
             </div>
-            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-none hover:border-gray-300 transition-colors duration-150">
+            <div className="p-6 bg-white/70 backdrop-blur-md border border-white/20 rounded-lg shadow-sm hover:bg-white/90 hover:border-white/30 transition-all duration-150">
               <div className="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -291,7 +291,7 @@ export default function DashboardHome() {
   return (
     <div className="space-y-6">
       {/* Welcome Card */}
-      <div className="p-8 bg-white border border-gray-200 rounded-lg relative overflow-hidden text-left shadow-none">
+      <div className="p-8 bg-white/70 backdrop-blur-md border border-white/20 rounded-lg relative overflow-hidden text-left shadow-sm">
         <div className="relative space-y-2 max-w-lg z-10">
           <span className="text-xs font-bold text-[#1A73E8] uppercase tracking-widest">Workspace</span>
           <h2 className="text-3xl font-extrabold text-[#202124]">

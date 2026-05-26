@@ -1,6 +1,6 @@
 export default function Navbar({ role, setRole, sidebarOpen, setSidebarOpen }) {
   return (
-    <header className="h-20 bg-[#F8F9FA] px-6 flex justify-between items-center shrink-0 z-30 sticky top-0 border-b border-gray-200">
+    <header className="h-20 bg-white/40 backdrop-blur-md px-6 flex justify-between items-center shrink-0 z-30 sticky top-0 border-b border-white/20 shadow-sm">
       <div className="flex items-center gap-4">
         <button 
           className="md:hidden text-slate-500 hover:text-[#202124] cursor-pointer" 
@@ -16,10 +16,10 @@ export default function Navbar({ role, setRole, sidebarOpen, setSidebarOpen }) {
           <span className="text-[#202124] font-semibold capitalize">Dashboard ({role})</span>
         </div>
       </div>
-
+ 
       <div className="flex items-center gap-4">
         {/* DEV TOOL: Role switcher dropdown */}
-        <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-1.5">
+        <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-1.5 shadow-sm">
           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Dev Role:</label>
           <select
             value={role}

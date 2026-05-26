@@ -197,7 +197,11 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="w-full min-h-screen h-screen overflow-hidden flex bg-[#F8F9FA] text-[#202124] font-sans relative">
+    <div className="w-full min-h-screen h-screen overflow-hidden flex bg-[#F8F9FA] text-[#202124] font-sans relative z-0">
+      {/* Dynamic Glassmorphism Background Accents */}
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] aspect-square rounded-full bg-blue-100/40 blur-[120px] pointer-events-none z-[-1]" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] aspect-square rounded-full bg-indigo-100/40 blur-[120px] pointer-events-none z-[-1]" />
+
       {/* Sidebar navigation */}
       <Sidebar 
         role={role} 
