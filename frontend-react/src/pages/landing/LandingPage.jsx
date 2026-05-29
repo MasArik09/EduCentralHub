@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import LoginModal from '../components/LoginModal';
+import LoginModal from '../auth/LoginModal';
 
 export default function LandingPage() {
   const navigate = useNavigate();

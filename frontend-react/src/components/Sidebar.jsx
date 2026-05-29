@@ -1,10 +1,11 @@
-import { NavLink } from 'react-router-dom';
-import TeacherSidebar from './teacher/TeacherSidebar';
+import { NavLink, useLocation } from 'react-router-dom';
+import TeacherSidebar from '../pages/teacher/components/TeacherSidebar';
 import { FiUser, FiUpload, FiUsers, FiLayers, FiGrid, FiCalendar, FiActivity, FiFileText, FiSettings, FiShield } from 'react-icons/fi';
 
 export default function Sidebar({ role, sidebarOpen, setSidebarOpen, user, handleLogout }) {
+  const location = useLocation();
   return (
-    <aside className={`bg-white/70 backdrop-blur-md border-r border-white/20 w-64 h-full flex-shrink-0 flex flex-col transition-transform duration-300 z-30 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} absolute md:relative shadow-sm`}>
+    <aside className={`bg-white/70 backdrop-blur-md border-r border-white/20 w-64 h-screen flex-shrink-0 flex flex-col transition-transform duration-300 z-40 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} fixed left-0 top-0 shadow-sm`}>
       <div className="p-6 border-b border-white/20 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-[#1A73E8] flex items-center justify-center font-bold text-white shadow-none">
@@ -50,7 +51,7 @@ export default function Sidebar({ role, sidebarOpen, setSidebarOpen, user, handl
         </NavLink>
 
         {/* Conditional Role Based Navigation */}
-        {role === 'admin' && (
+        {(role === 'admin' && !location.pathname.includes('/teacher/')) && (
           <>
             {/* MANAJEMEN PENGGUNA */}
             <div className="text-xs font-semibold text-[#5F6368] uppercase tracking-widest px-3 pt-4 mb-2">Manajemen Pengguna</div>
@@ -296,7 +297,7 @@ export default function Sidebar({ role, sidebarOpen, setSidebarOpen, user, handl
           </>
         )}
 
-        {role === 'teacher' && (
+        {(role === 'teacher' || location.pathname.includes('/teacher/')) && (
           <TeacherSidebar />
         )}
 

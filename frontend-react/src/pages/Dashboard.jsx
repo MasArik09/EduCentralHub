@@ -29,6 +29,9 @@ const decodeJWT = (token) => {
 export default function Dashboard() {
   const navigate = useNavigate();
   const [role, setRole] = useState(() => {
+    const savedRole = localStorage.getItem('role');
+    if (savedRole) return savedRole;
+    
     const token = localStorage.getItem('token');
     if (!token) return 'student';
     const decoded = decodeJWT(token);
@@ -183,22 +186,24 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="w-full min-h-screen h-screen overflow-hidden flex bg-[#F8F9FA] text-[#202124] font-sans relative z-0">
+    <div className="flex min-h-screen bg-[#F8F9FA] text-[#202124] font-sans relative z-0">
       {/* Dynamic Glassmorphism Background Accents */}
       <div className="absolute top-[-10%] left-[-10%] w-[50%] aspect-square rounded-full bg-blue-100/40 blur-[120px] pointer-events-none z-[-1]" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] aspect-square rounded-full bg-indigo-100/40 blur-[120px] pointer-events-none z-[-1]" />
 
-      {/* Sidebar navigation */}
-      <Sidebar 
-        role={role} 
-        sidebarOpen={sidebarOpen} 
-        setSidebarOpen={setSidebarOpen} 
-        user={user} 
-        handleLogout={handleLogout} 
-      />
+      {/* Sidebar navigation container */}
+      <div className={`w-64 fixed inset-y-0 left-0 z-50 transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+        <Sidebar 
+          role={role} 
+          sidebarOpen={sidebarOpen} 
+          setSidebarOpen={setSidebarOpen} 
+          user={user} 
+          handleLogout={handleLogout} 
+        />
+      </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 min-w-0 max-w-full h-screen overflow-y-auto overflow-x-hidden relative flex flex-col">
+      <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${sidebarOpen ? 'pl-64' : 'pl-0'}`}>
         {/* Top Navbar */}
         <Navbar 
           role={role} 
@@ -208,7 +213,7 @@ export default function Dashboard() {
         />
 
         {/* Content Body */}
-        <main className="p-6 md:p-8 flex-1 space-y-6 max-w-7xl w-full mx-auto text-left">
+        <main className="flex-1 p-6 md:p-8 overflow-y-auto">
           <Outlet context={{ user, role, setRole }} />
         </main>
       </div>

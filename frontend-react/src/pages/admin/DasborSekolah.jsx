@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { FiTrendingUp, FiActivity, FiBriefcase, FiUsers, FiTrendingDown, FiBarChart2 } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { FiTrendingUp, FiActivity, FiBriefcase, FiUsers, FiLayers, FiTrendingDown, FiBarChart2 } from 'react-icons/fi';
+import axios from 'axios';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -28,20 +29,62 @@ ChartJS.register(
 );
 
 export default function DasborSekolah() {
+  const [stats, setStats] = useState({
+    total_students: 1248,
+    total_teachers: 84,
+    total_classes: 36,
+    attendance_today: 96.4
+  });
+
+  const [attendanceChart, setAttendanceChart] = useState([97.2, 96.5, 98.1, 95.8, 96.4, 96.0]);
+  const [activityLogs, setActivityLogs] = useState([
+    { action: "Ujian Fisika Kelas 10 IPA-A telah dipublikasikan oleh Guru", time: "2 menit yang lalu" },
+    { action: "Pendaftaran 12 siswa baru ke Kelas 10 IPA-B sukses dilakukan", time: "15 menit yang lalu" },
+    { action: "Materi \"Pengenalan Database\" diunggah untuk Kelas 11 RPL", time: "1 jam yang lalu" }
+  ]);
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    axios.get('http://localhost:8080/api/admin/dashboard-stats', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => {
+      if (res.data) {
+        setStats({
+          total_students: res.data.total_students,
+          total_teachers: res.data.total_teachers,
+          total_classes: res.data.total_classes,
+          attendance_today: res.data.attendance_today
+        });
+        if (res.data.attendance_chart) {
+          setAttendanceChart(res.data.attendance_chart);
+        }
+        if (res.data.activity_logs) {
+          setActivityLogs(res.data.activity_logs);
+        }
+      }
+      setIsLoading(false);
+    })
+    .catch(err => {
+      console.error("Failed to fetch dashboard stats:", err);
+      setIsLoading(false);
+    });
+  }, []);
+
   // ── Attendance Bar Chart Data ──
+  const attendanceLabels = attendanceChart.length === 6
+    ? ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+    : ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+
   const attendanceData = {
-    labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'],
+    labels: attendanceLabels,
     datasets: [
       {
         label: 'Kehadiran (%)',
-        data: [97.2, 96.5, 98.1, 95.8, 96.4],
-        backgroundColor: [
-          'rgba(99, 102, 241, 0.55)',
-          'rgba(99, 102, 241, 0.55)',
-          'rgba(99, 102, 241, 0.55)',
-          'rgba(99, 102, 241, 0.55)',
-          'rgba(99, 102, 241, 0.55)',
-        ],
+        data: attendanceChart,
+        backgroundColor: 'rgba(99, 102, 241, 0.55)',
         borderColor: 'rgba(99, 102, 241, 0.8)',
         borderWidth: 1,
         borderRadius: 6,
@@ -181,7 +224,7 @@ export default function DasborSekolah() {
           Analitik & Dasbor Sekolah
         </h2>
         <p className="text-[#5F6368] text-xs mt-1">
-          Dapatkan ringkasan metrik analitis kehadiran, performa belajar, dan pertumbuhan partisipasi siswa.
+          Dapatkan ringkasan metrik analitis kehadiran, performa belajar, dan pertumbuhan partisipasi siswa secara real-time.
         </p>
       </div>
 
@@ -194,7 +237,7 @@ export default function DasborSekolah() {
               <FiActivity className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-black text-[#202124]">96.8%</div>
+          <div className="text-3xl font-black text-[#202124]">{stats.attendance_today}%</div>
           <div className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
             <FiTrendingUp /> +1.2% Bulan ini
           </div>
@@ -202,12 +245,12 @@ export default function DasborSekolah() {
 
         <div className="p-6 bg-white/80 backdrop-blur-md border border-white/40 rounded-xl shadow-sm space-y-2">
           <div className="flex justify-between items-center text-[#5F6368]">
-            <span className="text-[10px] font-bold uppercase tracking-wider">Pertumbuhan Siswa</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider">Total Siswa Aktif</span>
             <div className="w-8 h-8 bg-indigo-50 text-indigo-600 flex items-center justify-center rounded-lg">
               <FiUsers className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-black text-[#202124]">+342</div>
+          <div className="text-3xl font-black text-[#202124]">{stats.total_students}</div>
           <div className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
             <FiTrendingUp /> +8.4% Tahun ini
           </div>
@@ -220,7 +263,7 @@ export default function DasborSekolah() {
               <FiBriefcase className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-black text-[#202124]">48 Guru</div>
+          <div className="text-3xl font-black text-[#202124]">{stats.total_teachers} Guru</div>
           <div className="text-[10px] text-[#5F6368] font-bold flex items-center gap-1">
             Stabil / Kuota Terpenuhi
           </div>
@@ -228,14 +271,14 @@ export default function DasborSekolah() {
 
         <div className="p-6 bg-white/80 backdrop-blur-md border border-white/40 rounded-xl shadow-sm space-y-2">
           <div className="flex justify-between items-center text-[#5F6368]">
-            <span className="text-[10px] font-bold uppercase tracking-wider">Nilai Rata-rata Kuis</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider">Total Kelas & Rombel</span>
             <div className="w-8 h-8 bg-indigo-50 text-indigo-600 flex items-center justify-center rounded-lg">
-              <FiBarChart2 className="w-4 h-4" />
+              <FiLayers className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-black text-[#202124]">82.4 / 100</div>
-          <div className="text-[10px] text-rose-500 font-bold flex items-center gap-1">
-            <FiTrendingDown /> -0.3% Minggu ini
+          <div className="text-3xl font-black text-[#202124]">{stats.total_classes}</div>
+          <div className="text-[10px] text-indigo-600 font-bold flex items-center gap-1">
+            <FiTrendingUp /> Kelas Aktif Terdaftar
           </div>
         </div>
       </div>
@@ -288,18 +331,14 @@ export default function DasborSekolah() {
           </p>
         </div>
         <div className="space-y-3 pt-1">
-          <div className="p-4 bg-white/50 backdrop-blur-sm border border-white/20 rounded-lg flex justify-between items-center text-xs hover:bg-white/70 transition-colors">
-            <span className="font-bold text-[#202124]">Ujian Fisika Kelas 10 IPA-A telah dipublikasikan oleh Guru</span>
-            <span className="text-[#5F6368] font-semibold text-[10px] shrink-0 ml-4">2 menit yang lalu</span>
-          </div>
-          <div className="p-4 bg-white/50 backdrop-blur-sm border border-white/20 rounded-lg flex justify-between items-center text-xs hover:bg-white/70 transition-colors">
-            <span className="font-bold text-[#202124]">Pendaftaran 12 siswa baru ke Kelas 10 IPA-B sukses dilakukan</span>
-            <span className="text-[#5F6368] font-semibold text-[10px] shrink-0 ml-4">15 menit yang lalu</span>
-          </div>
-          <div className="p-4 bg-white/50 backdrop-blur-sm border border-white/20 rounded-lg flex justify-between items-center text-xs hover:bg-white/70 transition-colors">
-            <span className="font-bold text-[#202124]">Materi "Pengenalan Database" diunggah untuk Kelas 11 RPL</span>
-            <span className="text-[#5F6368] font-semibold text-[10px] shrink-0 ml-4">1 jam yang lalu</span>
-          </div>
+          {activityLogs.map((log, idx) => (
+            <div key={idx} className="p-4 bg-white/50 backdrop-blur-sm border border-white/20 rounded-lg flex justify-between items-center text-xs hover:bg-white/70 transition-colors">
+              <span className="font-bold text-[#202124]">
+                {log.user ? `${log.user}: ${log.action}` : log.action}
+              </span>
+              <span className="text-[#5F6368] font-semibold text-[10px] shrink-0 ml-4">{log.time}</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>
